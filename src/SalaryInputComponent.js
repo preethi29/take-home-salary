@@ -1,7 +1,7 @@
 import React from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
-
+import PropTypes from 'prop-types';
 const s = StyleSheet.create({
     inputGroup: {
         padding: '5px',
@@ -25,6 +25,9 @@ export default class SalaryInputComponent extends React.Component {
 
 }
 
-SalaryInputComponent.protoTypes = {
-
+SalaryInputComponent.propTypes = {
+    label: PropTypes.string,
+    name: PropTypes.string,
+    value: PropTypes.number,
+    onChange: PropTypes.func,
 };

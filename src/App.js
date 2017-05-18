@@ -3,7 +3,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
 import _ from "lodash";
 
-import logo from "./logo.svg";
+import logo from "./rupee-indian.svg";
 import "./App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
 const s = StyleSheet.create({
