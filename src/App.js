@@ -1,17 +1,14 @@
 import React, {Component} from "react";
-import logo from "./logo.svg";
-import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
 import _ from "lodash";
 
+import logo from "./logo.svg";
+import "./App.css";
+import SalaryInputComponent from "./SalaryInputComponent";
 const s = StyleSheet.create({
     appContent: {
         padding: '20px',
-    },
-    inputGroup: {
-        padding: '5px',
-        width: '75%'
     },
     appInputs: {
         width: '50%',
@@ -22,6 +19,10 @@ const s = StyleSheet.create({
         width: '50%',
         verticalAlign: 'top',
         display: 'inline-block'
+    },
+    exemptions: {
+        paddingLeft: '5px',
+        paddingTop: '20px'
     }
 });
 
@@ -49,29 +50,22 @@ class App extends Component {
     }
 
     render() {
-        const inputGroupClassName = "input-group " + css(s.inputGroup);
         return (
             <div className="App">
                 <div className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
-                    <h2>Calculate </h2>
+                    <h2>Know your Take home salary </h2>
                 </div>
                 <div className={css(s.appContent)}>
                     <div className={css(s.appInputs)}>
-                        <div className={inputGroupClassName}>
-                            <span className="input-group-addon">CTC (Yearly)</span>
-                            <input type="number" name="ctc" value={this.state.ctc} className="form-control"
-                                   onChange={this._handleInputChange}/>
-                        </div>
-                        <div className={inputGroupClassName}>
-                            <span className="input-group-addon">Basic(Monthly)</span>
-                            <input type="number" name="basic" value={this.state.basic} className="form-control"
-                                   onChange={this._handleInputChange}/>
-                        </div>
-                        <div className={inputGroupClassName}>
-                            <span className="input-group-addon">HRA (Monthly)</span>
-                            <input type="number" name="hra" value={this.state.hra} className="form-control"
-                                   onChange={this._handleInputChange}/>
+                        <SalaryInputComponent label="CTC (Yearly)" name="ctc" value={this.state.ctc}
+                                              onChange={this._handleInputChange}/>
+                        <SalaryInputComponent label="Basic (Monthly)" name="basic" value={this.state.basic}
+                                              onChange={this._handleInputChange}/>
+                        <div className={css(s.exemptions)}>
+                            <h4>Exemptions</h4>
+                            <SalaryInputComponent label="HRA (Monthly)" name="hra" value={this.state.hra}
+                                                  onChange={this._handleInputChange}/>
                         </div>
                     </div>
                     <div className={css(s.appCalculated)}>
