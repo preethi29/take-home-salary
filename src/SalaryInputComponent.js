@@ -2,10 +2,11 @@ import React from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
 import PropTypes from 'prop-types';
+
 const s = StyleSheet.create({
     inputGroup: {
-        padding: '5px',
-        width: '75%'
+        padding: '5px 0px',
+        width: '60%'
     },
 });
 
