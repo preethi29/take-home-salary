@@ -1,5 +1,5 @@
 import React from "react";
-import "../node_modules/bootstrap/dist/css/bootstrap.css";
+import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import _ from "lodash";
 import PropTypes from 'prop-types';
 

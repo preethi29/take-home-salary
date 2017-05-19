@@ -1,12 +1,13 @@
 import React, {Component} from "react";
-import "../node_modules/bootstrap/dist/css/bootstrap.css";
+import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
 import _ from "lodash";
 
-import logo from "./rupee-indian.svg";
-import "./App.css";
+
+import logo from "../rupee-indian.svg";
+import "../App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
-import PFDetails from "./PFDetails";
+import BasicSalary from "./BasicSalary";
 const s = StyleSheet.create({
     appContent: {
         padding: '20px',
@@ -26,10 +27,8 @@ const s = StyleSheet.create({
     },
     bold: {
         fontWeight: 'bold',
-        fontSize: '15px',
+        fontSize: '16px',
     },
-    hra: {}
-
 });
 
 class App extends Component {
@@ -38,7 +37,6 @@ class App extends Component {
         super();
         this.state = {
             basic: 0,
-            ctc: 0,
             hra: 0,
             pf: 0,
             employerPf: 0,
@@ -73,22 +71,43 @@ class App extends Component {
 
     _calculateSalaryComponents(state) {
         let {
-            ctc, medicalReimbursement, monthlyRent, metro,
-            conveyance, grossSalary, professionalTax, basicPercent
+            medicalReimbursement, monthlyRent, metro,
+            conveyance, grossSalary, professionalTax, basicPercent, taxSavingInvestments
         } = state;
         let basic = grossSalary * basicPercent / 100;
-        const pf = basic * (12 / 100);
+        const pf = _.floor(basic * (12 / 100), 2);
         const employerPf = _.floor(basic * (3.67 / 100), 2);
         const employerEps = _.floor(basic * (8.33 / 100), 2);
         const totalEmployerContribution = employerEps + employerPf;
         const hra = this._calculateHRA(basic, monthlyRent, metro);
         medicalReimbursement = medicalReimbursement > 15000 ? 15000 : medicalReimbursement;
         conveyance = conveyance > 19200 ? 19200 : conveyance;
-        const taxableIncome = grossSalary - pf - conveyance - medicalReimbursement - hra - professionalTax;
+        const taxSavingLimit = 150000 - pf;
+        taxSavingInvestments = (taxSavingInvestments !== 0 && taxSavingInvestments > taxSavingLimit) ?
+            taxSavingLimit : taxSavingInvestments;
+        const taxableIncome = grossSalary - pf - conveyance - medicalReimbursement
+            - hra - professionalTax - taxSavingInvestments;
         const incomeTax = this._calculateIncomeTax(taxableIncome);
+        const educationCess = _.floor(incomeTax * 0.03, 2);
+        const takeHomeSalary = grossSalary - incomeTax - educationCess - professionalTax - pf - medicalReimbursement;
         return {
-            basic, ctc, metro, pf, totalEmployerContribution, grossSalary, basicPercent, conveyance, monthlyRent,
-            employerPf, employerEps, medicalReimbursement, hra, incomeTax
+            basic,
+            metro,
+            pf,
+            totalEmployerContribution,
+            grossSalary,
+            basicPercent,
+            conveyance,
+            monthlyRent,
+            employerPf,
+            employerEps,
+            medicalReimbursement,
+            hra,
+            incomeTax,
+            takeHomeSalary,
+            taxSavingInvestments,
+            taxSavingLimit,
+            educationCess
         };
     }
 
@@ -97,32 +116,40 @@ class App extends Component {
     }
 
     _calculateHRA(basic, monthlyRent, metro) {
-        const percentFromBasic = metro ? (basic * 0.50) : (basic * 0.40);
+        const percentFromBasic = _.floor(metro ? (basic * 0.50) : (basic * 0.40), 2);
         if (monthlyRent === 0) {
             return percentFromBasic;
         }
-        const rentPaidMinusTenPercentOfBasic = (monthlyRent * 12) - (basic * 0.10)
+        const rentPaidMinusTenPercentOfBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
         return rentPaidMinusTenPercentOfBasic < percentFromBasic ? rentPaidMinusTenPercentOfBasic : percentFromBasic;
     }
 
     _calculateIncomeTax(taxableIncome) {
         let incomeTax = 0;
+        const twoAndHalfLakhs = 250000;
         const fiveLakhs = 500000;
-        //income above five lakhs is only taxable
-        taxableIncome = taxableIncome - fiveLakhs;
+        //income above 2.5 lakhs is only taxable
+        taxableIncome -= 250000;
         if (taxableIncome <= 0) {
             return 0;
         }
-        //apply 20% slab rate
-        if (taxableIncome > fiveLakhs) {
-            incomeTax += fiveLakhs * 0.20;
-            //apply 30% slab rate
-            taxableIncome = taxableIncome - fiveLakhs;
-            incomeTax += taxableIncome * 0.30;
+        //apply 5% slab rate
+        if (taxableIncome > twoAndHalfLakhs) {
+            incomeTax += twoAndHalfLakhs * 0.05;
+            //apply 20% slab rate
+            taxableIncome -= twoAndHalfLakhs;
+            if (taxableIncome > fiveLakhs) {
+                incomeTax += fiveLakhs * 0.20;
+                taxableIncome -= fiveLakhs;
+                //apply 30% slab rate
+                incomeTax += taxableIncome * 0.30;
+            } else {
+                incomeTax += taxableIncome * 0.20
+            }
         } else {
-            incomeTax += taxableIncome * 0.20;
+            incomeTax += taxableIncome * 0.05;
         }
-        return incomeTax;
+        return _.floor(incomeTax, 2);
     }
 
     render() {
@@ -134,33 +161,12 @@ class App extends Component {
                 </div>
                 <div className={css(s.appContent)}>
                     <div className={css(s.appInputs)}>
-                        Input your gross pay
+                        <h5>Input your gross pay</h5>
                         <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary"
                                               value={this.state.grossSalary} onChange={this._handleInputChange}/>
 
-                        <div className="btn-group input-group">
-                            <span className="input-group-addon">Basic is </span>
-                            <label className={"btn btn-primary " + (this.state.basicPercent === '30' ? 'active' : '')}>
-                                <input type="radio" value="30" name="basicPercent" onChange={this._handleInputChange}
-                                       checked={this.state.basicPercent === '30'}/> 30% of Gross
-                            </label>
-                            <label className={"btn btn-primary " + ( this.state.basicPercent === '40' ? 'active' : '')}>
-                                <input type="radio" value="40" name="basicPercent" onChange={this._handleInputChange}
-                                       checked={this.state.basicPercent === '40'}/> 40% of Gross
-                            </label>
-                            <label
-                                className={"btn btn-primary " + (this.state.basicPercent !== '30' && this.state.basicPercent !== '40' ? 'active' : '')}>
-                                <input type="radio" value="0" name="basicPercent" onChange={this._handleInputChange}
-                                       checked={this.state.basicPercent !== '30' && this.state.basicPercent !== '40'}/>
-                                Other
-                                {this.state.basicPercent !== '30' && this.state.basicPercent !== '40' &&
-                                <input type="number" name="basicPercent" value={this.state.basicPercent}
-                                       className="form-control"
-                                       onChange={this._handleInputChange}/>
+                        <BasicSalary basicPercent={this.state.basicPercent} onChange={this._handleInputChange}/>
 
-                                }
-                            </label>
-                        </div>
                         { this._grossSalaryNotEmpty() &&
                         <div className={css(s.optionalInputs)}>
                             <div className={css(s.hra)}>
@@ -173,15 +179,13 @@ class App extends Component {
                                                       value={this.state.monthlyRent}
                                                       onChange={this._handleInputChange}/>
                             </div>
-                            {/*<SalaryInputComponent label="Medical Reimbursement (Yearly)" name="medicalReimbursement"*/}
+                            {/*<SalaryInputComponent label="Medical Applied (Limit: 15000)" name="medicalReimbursement"*/}
                             {/*value={this.state.medicalReimbursement}*/}
                             {/*onChange={this._handleInputChange}/>*/}
-                            {/*<SalaryInputComponent label="Conveyance (Yearly)" name="conveyance"*/}
-                            {/*value={this.state.conveyance}*/}
-                            {/*onChange={this._handleInputChange}/>*/}
-                            {/*<SalaryInputComponent label="Tax Saving Investments" name="taxSavingInvestments"*/}
-                            {/*value={this.state.taxSavingInvestments}*/}
-                            {/*onChange={this._handleInputChange}/>*/}
+                            <SalaryInputComponent label="Investments under 80C, 80CC" name="taxSavingInvestments"
+                                                  value={this.state.taxSavingInvestments}
+                                                  limit={this.state.taxSavingLimit}
+                                                  onChange={this._handleInputChange}/>
                         </div>
                         }
 
@@ -213,12 +217,15 @@ class App extends Component {
                                 <td>{this.state.conveyance}</td>
                             </tr>
                             <tr>
-                                <td>Medical Reimbursement</td>
+                                <td>Medical Reimbursement
+                                    <a data-container="body" data-toggle="popover" data-placement="top"
+                                       data-content="Indicates whether or not this product get other prep before shipment">Info</a>
+                                </td>
                                 <td>{_.floor(this.state.medicalReimbursement / 12, 2)}</td>
                                 <td>{this.state.medicalReimbursement}</td>
                             </tr>
                             <tr>
-                                <td>Employee PF</td>
+                                <td>Employee PF (12% Basic)</td>
                                 <td>{_.floor(this.state.pf / 12, 2)}</td>
                                 <td>{this.state.pf}</td>
                             </tr>
@@ -237,11 +244,16 @@ class App extends Component {
                                 <td>{_.floor(this.state.educationCess / 12, 2) }</td>
                                 <td>{this.state.educationCess }</td>
                             </tr>
+                            <tr className={css(s.bold)}>
+                                <td>Take Home Salary</td>
+                                <td>{_.floor(this.state.takeHomeSalary / 12, 2) }</td>
+                                <td>{this.state.takeHomeSalary }</td>
+                            </tr>
                             </tbody>
                         </table>
 
-                        <PFDetails pf={this.state.pf} employerPf={this.state.employerPf}
-                                   employerEps={this.state.employerEps}/>
+                        {/*<PFDetails pf={this.state.pf} employerPf={this.state.employerPf}*/}
+                        {/*employerEps={this.state.employerEps}/>*/}
                     </div>
                     }
                 </div>

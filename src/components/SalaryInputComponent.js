@@ -1,12 +1,12 @@
 import React from "react";
-import "../node_modules/bootstrap/dist/css/bootstrap.css";
+import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const s = StyleSheet.create({
     inputGroup: {
         padding: '5px 0px',
-        width: '60%'
+        width: '65%'
     },
 });
 
@@ -16,9 +16,11 @@ export default class SalaryInputComponent extends React.Component {
 
         return (
             <div className={inputGroupClassName}>
-                <span className="input-group-addon">{this.props.label}</span>
+                <span className="input-group-addon">{this.props.label}
+                    {this.props.limit && <small> (Limit: {this.props.limit})</small>}
+                    </span>
                 <input type="number" name={this.props.name} value={this.props.value} className="form-control"
-                       min="0" onChange={this.props.onChange}/>
+                       min="0" max={this.props.max} onChange={this.props.onChange}/>
             </div>
 
         );
@@ -31,8 +33,11 @@ SalaryInputComponent.propTypes = {
     name: PropTypes.string,
     value: PropTypes.number,
     onChange: PropTypes.func,
+    max: PropTypes.number,
+    limit: PropTypes.string,
 };
 
 SalaryInputComponent.defaultProps = {
-    style: css(s.inputGroup)
+    style: css(s.inputGroup),
+    max: 524288
 };
