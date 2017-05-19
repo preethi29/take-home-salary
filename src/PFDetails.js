@@ -20,8 +20,8 @@ export default class PFDetails extends React.Component {
                     <tbody>
                     <tr>
                         <td>Employee's Contribution to PF (12% of Basic)</td>
-                        <td>{this.props.epf}</td>
-                        <td>{this.props.epf * 12}</td>
+                        <td>{this.props.pf}</td>
+                        <td>{this.props.pf * 12}</td>
                     </tr>
                     <tr>
                         <td>Employer's Contribution to PF (3.67% of Basic)</td>
@@ -41,7 +41,7 @@ export default class PFDetails extends React.Component {
 }
 
 PFDetails.propTypes = {
-    epf: PropTypes.number.isRequired,
+    pf: PropTypes.number.isRequired,
     employerPf: PropTypes.number.isRequired,
     employerEps: PropTypes.number.isRequired,
 };
