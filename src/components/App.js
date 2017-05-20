@@ -25,14 +25,19 @@ const s = StyleSheet.create({
         textAlign: 'left',
         width: '50%',
         verticalAlign: 'top',
-        display: 'inline-block'
+        display: 'inline-block',
+        fontSize: '1.4em',
+        '@media (max-width: 700px)': {
+            width: '100%'
+        }
+
     },
     optionalInputs: {
         padding: '20px 0px'
     },
     bold: {
         fontWeight: 'bold',
-        fontSize: '16px',
+        fontSize: '1.142em',
     },
     hra: {
         padding: '10px 0px'
