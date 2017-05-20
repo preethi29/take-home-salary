@@ -20,7 +20,7 @@ export default class SalaryInputComponent extends React.Component {
                     {this.props.limit && <small> (Limit: {this.props.limit})</small>}
                     </span>
                 <input type="number" name={this.props.name} value={this.props.value} className="form-control"
-                       min="0" max={this.props.max} onChange={this.props.onChange}/>
+                       step={this.props.step} min="0" max={this.props.max} onChange={this.props.onChange}/>
             </div>
 
         );
@@ -35,9 +35,11 @@ SalaryInputComponent.propTypes = {
     onChange: PropTypes.func,
     max: PropTypes.number,
     limit: PropTypes.string,
+    step: PropTypes.number
 };
 
 SalaryInputComponent.defaultProps = {
     style: css(s.inputGroup),
-    max: 524288
+    max: 524288,
+    step: 1,
 };

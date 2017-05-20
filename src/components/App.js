@@ -178,7 +178,7 @@ class App extends Component {
                                 </label>
 
                                 <SalaryInputComponent label="Monthly Rent" name="monthlyRent"
-                                                      value={this.state.monthlyRent}
+                                                      value={this.state.monthlyRent} step="500"
                                                       onChange={this._handleInputChange}/>
                             </div>
                             {/*<SalaryInputComponent label="Medical Applied (Limit: 15000)" name="medicalReimbursement"*/}
