@@ -2,7 +2,7 @@
   "name": "take-home-salary",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://preethi29.github.io/take-home-salary",
+  "homepage": "https://preethi29.github.io/take-home-salary",
   "dependencies": {
     "aphrodite": "1.2.1",
     "bootstrap": "^3.3.7",
