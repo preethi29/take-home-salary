@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 const s = StyleSheet.create({
     inputGroup: {
         padding: '5px 0px',
-        width: '65%'
+        width: '70%'
     },
 });
 
