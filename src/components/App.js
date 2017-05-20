@@ -75,7 +75,7 @@ class App extends Component {
             medicalReimbursement, monthlyRent, metro,
             conveyance, grossSalary, professionalTax, basicPercent, taxSavingInvestments
         } = state;
-        let basic = grossSalary * basicPercent / 100;
+        let basic = _.floor(grossSalary * basicPercent / 100);
         const pf = _.floor(basic * (12 / 100), 2);
         const employerPf = _.floor(basic * (3.67 / 100), 2);
         const employerEps = _.floor(basic * (8.33 / 100), 2);
@@ -90,7 +90,7 @@ class App extends Component {
             - hra - professionalTax - taxSavingInvestments;
         const incomeTax = this._calculateIncomeTax(taxableIncome);
         const educationCess = _.floor(incomeTax * 0.03, 2);
-        const takeHomeSalary = grossSalary - incomeTax - educationCess - professionalTax - pf - medicalReimbursement;
+        const takeHomeSalary = _.floor(grossSalary - incomeTax - educationCess - professionalTax - pf - medicalReimbursement, 2);
         return {
             basic,
             metro,
@@ -164,7 +164,7 @@ class App extends Component {
                 <div className={css(s.appContent)}>
                     <div className={css(s.appInputs)}>
                         <h5>Input your gross pay</h5>
-                        <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary"
+                        <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary" step="100000"
                                               value={this.state.grossSalary} onChange={this._handleInputChange}/>
 
                         <BasicSalary basicPercent={this.state.basicPercent} onChange={this._handleInputChange}/>
@@ -181,9 +181,6 @@ class App extends Component {
                                                       value={this.state.monthlyRent} step="500"
                                                       onChange={this._handleInputChange}/>
                             </div>
-                            {/*<SalaryInputComponent label="Medical Applied (Limit: 15000)" name="medicalReimbursement"*/}
-                            {/*value={this.state.medicalReimbursement}*/}
-                            {/*onChange={this._handleInputChange}/>*/}
                             <SalaryInputComponent label="Investments under 80C, 80CC" name="taxSavingInvestments"
                                                   value={this.state.taxSavingInvestments}
                                                   limit={this.state.taxSavingLimit}
