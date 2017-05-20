@@ -16,7 +16,10 @@ const s = StyleSheet.create({
     appInputs: {
         width: '50%',
         display: 'inline-block',
-        overflowX: 'auto'
+        overflowX: 'auto',
+        '@media (max-width: 700px)': {
+            width: '100%'
+        }
     },
     appCalculated: {
         textAlign: 'left',
