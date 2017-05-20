@@ -52,6 +52,7 @@ class App extends Component {
             totalEmployerContribution: 0,
             taxSavingInvestments: 0,
             basicPercent: '30',
+            monthlyRent:0,
             metro: false
         };
         this._handleInputChange = this._handleInputChange.bind(this);
@@ -104,6 +105,7 @@ class App extends Component {
             medicalReimbursement,
             hra,
             incomeTax,
+            taxableIncome,
             takeHomeSalary,
             taxSavingInvestments,
             taxSavingLimit,
@@ -116,10 +118,10 @@ class App extends Component {
     }
 
     _calculateHRA(basic, monthlyRent, metro) {
-        const percentFromBasic = _.floor(metro ? (basic * 0.50) : (basic * 0.40), 2);
         if (monthlyRent === 0) {
-            return percentFromBasic;
+            return 0;
         }
+        const percentFromBasic = _.floor(metro ? (basic * 0.50) : (basic * 0.40), 2);
         const rentPaidMinusTenPercentOfBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
         return rentPaidMinusTenPercentOfBasic < percentFromBasic ? rentPaidMinusTenPercentOfBasic : percentFromBasic;
     }
@@ -218,8 +220,6 @@ class App extends Component {
                             </tr>
                             <tr>
                                 <td>Medical Reimbursement
-                                    <a data-container="body" data-toggle="popover" data-placement="top"
-                                       data-content="Indicates whether or not this product get other prep before shipment">Info</a>
                                 </td>
                                 <td>{_.floor(this.state.medicalReimbursement / 12, 2)}</td>
                                 <td>{this.state.medicalReimbursement}</td>
@@ -233,6 +233,11 @@ class App extends Component {
                                 <td>Professional Tax</td>
                                 <td>{_.floor(this.state.professionalTax / 12, 2)}</td>
                                 <td>{this.state.professionalTax}</td>
+                            </tr>
+                            <tr>
+                                <td>Taxable Income</td>
+                                <td>{_.floor(this.state.taxableIncome / 12, 2)}</td>
+                                <td>{this.state.taxableIncome}</td>
                             </tr>
                             <tr>
                                 <td>Income Tax</td>
