@@ -11,7 +11,7 @@ import BasicSalary from "./BasicSalary";
 const s = StyleSheet.create({
     appContent: {
         padding: '1.3889%',
-        height: '80.695%'
+        height: '80.695%',
     },
     appInputs: {
         width: '50%',
@@ -219,7 +219,7 @@ class App extends Component {
                                                   value={this.state.eightyE}
                                                   onChange={this._handleInputChange}/>
                             <SalaryInputComponent label="80G - Donations" name="eightyG"
-                                                  value={this.state.eightyE}
+                                                  value={this.state.eightyG}
                                                   onChange={this._handleInputChange}/>
                         </div>
                         }

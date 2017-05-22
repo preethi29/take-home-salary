@@ -6,7 +6,11 @@ import PropTypes from "prop-types";
 const s = StyleSheet.create({
     inputGroup: {
         padding: '5px 0px',
-        width: '70%'
+        width: '70%',
+        '@media (max-width: 700px)': {
+            width: '90%'
+        }
+
     },
 });
 
