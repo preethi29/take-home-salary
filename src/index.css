@@ -1,13 +1,26 @@
 body, html {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  height: 100%;
-  font-size: 62.5%;
-  background: #eeeade;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    height: 100%;
+    font-size: 62.5%;
+    background: #eeeade;
 
 }
-html{
-  font-size: 16px;
 
+html {
+    font-size: 16px;
 }
+@media (max-width: 600px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 350px) {
+    html {
+        font-size: 12px;
+    }
+}
+
+
