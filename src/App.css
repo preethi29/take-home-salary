@@ -3,7 +3,7 @@
 }
 .App-logo {
   /*animation: App-logo-spin infinite 5s linear;*/
-  max-width: 10%;
+  max-width: 5%;
   height: auto;
 }
 
@@ -21,4 +21,8 @@ h2{
 @keyframes App-logo-spin {
   from {transform: rotate(30deg); }
   to { transform: rotate(-30deg); }
+}
+
+.input-group-addon{
+  font-size: 1.4em;
 }
