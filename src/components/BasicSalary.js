@@ -12,7 +12,7 @@ const s = StyleSheet.create({
         }
     },
     otherBasicPercent: {
-        borderRadius: '1px',
+        borderRadius: '4px',
         color: 'black',
         height: '20px',
     },

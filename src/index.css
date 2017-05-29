@@ -4,8 +4,7 @@ body, html {
     font-family: sans-serif;
     height: 100%;
     font-size: 62.5%;
-    background: #eeeade;
-
+    background: #fff;
 }
 
 html {
@@ -14,12 +13,6 @@ html {
 @media (max-width: 600px) {
     html {
         font-size: 14px;
-    }
-}
-
-@media (max-width: 350px) {
-    html {
-        font-size: 12px;
     }
 }
 

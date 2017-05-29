@@ -8,7 +8,7 @@ const s = StyleSheet.create({
         padding: '5px 0px',
         width: '70%',
         '@media (max-width: 700px)': {
-            width: '90%'
+            width: '95%'
         }
 
     },
