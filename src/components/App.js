@@ -36,7 +36,7 @@ const s = StyleSheet.create({
 
     },
     optionalInputs: {
-        padding: '20px 0px'
+        padding: '4% 0'
     },
     bold: {
         fontWeight: 'bold',
@@ -186,7 +186,6 @@ class App extends Component {
                 </div>
                 <div className={css(s.appContent)}>
                     <div className={css(s.appInputs)}>
-                        <h5>Input your gross pay</h5>
                         <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary" step="100000"
                                               value={this.state.grossSalary} onChange={this._handleInputChange}/>
 
