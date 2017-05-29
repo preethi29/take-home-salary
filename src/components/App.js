@@ -9,6 +9,10 @@ import "../App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
 import BasicSalary from "./BasicSalary";
 const s = StyleSheet.create({
+    heading:{
+        marginTop: '8px',
+        marginBottom: '5px',
+    },
     appContent: {
         padding: '1.3889%',
     },
@@ -178,7 +182,7 @@ class App extends Component {
             <div className="App">
                 <div className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
-                    <h2>Know your Take home salary </h2>
+                    <h2 className={css(s.heading)}>Know your Take home salary </h2>
                 </div>
                 <div className={css(s.appContent)}>
                     <div className={css(s.appInputs)}>
