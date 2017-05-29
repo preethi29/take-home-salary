@@ -11,7 +11,6 @@ import BasicSalary from "./BasicSalary";
 const s = StyleSheet.create({
     appContent: {
         padding: '1.3889%',
-        height: '80.695%',
     },
     appInputs: {
         width: '50%',
