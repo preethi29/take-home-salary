@@ -5,7 +5,7 @@ import _ from "lodash";
 
 
 import logo from "../rupee-indian.svg";
-import "../App.css";
+import "../stylesheets/App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
 import BasicSalary from "./BasicSalary";
 const s = StyleSheet.create({
@@ -203,7 +203,7 @@ class App extends Component {
                                                       value={this.state.monthlyRent} step="500"
                                                       onChange={this._handleInputChange}/>
                             </div>
-                            <h5>Investments</h5>
+                            <h4>Investments</h4>
                             <SalaryInputComponent label="80C, 80CC" name="eightyC"
                                                   value={this.state.eightyC}
                                                   limit={this.state.eightyCLimit}

@@ -28,14 +28,9 @@ h2{
   to { transform: rotate(-30deg); }
 }
 
-.input-group-addon{
-  font-size: 1.4em;
-  padding: 1.225% 1.225%;
-}
-
 .btn{
   font-size: 1.4em;
-  background-color: #0099e5;
+  background-color: #00bcd4;
 }
 
 @media (max-width: 425px) {
