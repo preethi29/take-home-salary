@@ -22,8 +22,8 @@ const s = StyleSheet.create({
     },
     metro: {
         position: 'absolute',
-        bottom: '11%',
-        margin: '0 2    %',
+        bottom: '15%',
+        margin: '0 2%',
     }
 });
 export default class Hra extends Component {
