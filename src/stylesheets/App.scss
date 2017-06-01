@@ -33,6 +33,19 @@ h2{
   background-color: #00bcd4;
 }
 
+.button{
+  font-size: 1.4em;
+  background-color: #00bcd4;
+  color: #fff;
+  padding: 6px 12px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  margin: 0;
+}
+
 @media (max-width: 425px) {
   .input-group-addon{
     width: 45%;

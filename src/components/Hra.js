@@ -13,17 +13,21 @@ const s = StyleSheet.create({
             width: '95%'
         }
     },
-    monthlyRent:{
+    monthlyRent: {
         width: '70%',
         '@media (max-width: 700px)': {
-            width: '70%'
+            width: '60%'
         },
         display: 'table-cell',
     },
     metro: {
         position: 'absolute',
-        bottom: '15%',
+        bottom: '14%',
         margin: '0 2%',
+        '@media (max-width: 700px)': {
+            bottom: '7%'
+        },
+
     }
 });
 export default class Hra extends Component {
@@ -34,10 +38,12 @@ export default class Hra extends Component {
             <SalaryInputComponent label="Monthly Rent" name="monthlyRent" style={s.monthlyRent}
                                   value={this.props.monthlyRent} step="500"
                                   onChange={this.props.onChange}/>
-            <label className={"btn btn-primary " + css(s.metro)+( this.props.metro ? ' active' : '')}>
-                <input type="checkbox" name="metro" checked={this.props.metro}
-                       onChange={this.props.onChange}/> Living in Metro
-            </label>
+            <div className={css(s.metro)}>
+                <label className={"button " + ( this.props.metro ? ' active' : '')}>
+                    <input type="checkbox" name="metro" checked={this.props.metro}
+                           onChange={this.props.onChange}/> Living in Metro
+                </label>
+            </div>
         </div>);
 
     }
