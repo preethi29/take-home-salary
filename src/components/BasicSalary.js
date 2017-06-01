@@ -49,6 +49,6 @@ export default class BasicSalary extends React.Component {
 }
 
 BasicSalary.propTypes = {
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
     basicPercent: PropTypes.string
-}
+};

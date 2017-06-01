@@ -8,8 +8,9 @@ import logo from "../rupee-indian.svg";
 import "../stylesheets/App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
 import BasicSalary from "./BasicSalary";
+import Hra from "./Hra";
 const s = StyleSheet.create({
-    heading:{
+    heading: {
         marginTop: '8px',
         marginBottom: '5px',
     },
@@ -36,15 +37,12 @@ const s = StyleSheet.create({
 
     },
     optionalInputs: {
-        padding: '4% 0'
+        padding: '2% 0'
     },
     bold: {
         fontWeight: 'bold',
         fontSize: '1.142em',
     },
-    hra: {
-        padding: '10px 0px'
-    }
 });
 
 class App extends Component {
@@ -193,16 +191,8 @@ class App extends Component {
 
                         { this._grossSalaryNotEmpty() &&
                         <div className={css(s.optionalInputs)}>
-                            <div className={css(s.hra)}>
-                                <label className={"btn btn-primary " + ( this.state.metro ? 'active' : '')}>
-                                    <input type="checkbox" name="metro" checked={this.state.metro}
-                                           onChange={this._handleInputChange}/> Living in Metro
-                                </label>
-
-                                <SalaryInputComponent label="Monthly Rent" name="monthlyRent"
-                                                      value={this.state.monthlyRent} step="500"
-                                                      onChange={this._handleInputChange}/>
-                            </div>
+                            <Hra onChange={this._handleInputChange} monthlyRent={this.state.monthlyRent}
+                                 metro={this.state.metro}/>
                             <h4>Investments</h4>
                             <SalaryInputComponent label="80C, 80CC" name="eightyC"
                                                   value={this.state.eightyC}
