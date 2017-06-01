@@ -21,7 +21,7 @@ const s = StyleSheet.create({
     textFieldLabelFocus: {
         color: '#00bcd4',
         webkitTransition: 'all 0.125s ease',
-        transition: 'all 0.125s ease',
+        transition: 'all 0.2s ease',
     },
     textField: {
         fontSize: '1.4em',
@@ -29,18 +29,44 @@ const s = StyleSheet.create({
         borderBottom: '1px solid #ccc',
         width: '100%',
         lineHeight: '1.5',
-        transition: 'all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1)',
-        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #00bcd4 4%)',
-        backgroundPosition: '-20000px 0',
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-
         ':focus': {
             outline: 'none',
             borderBottom: '1px solid #00bcd4',
-            backgroundPosition: '0 0',
         }
     },
+    bar: {
+        display: 'block',
+        width: '100%',
+        position: 'relative',
+        ':before': {
+            content: "''",
+            height: '2px',
+            width: '0',
+            bottom: '1px',
+            position: 'absolute',
+            background: '#00bcd4',
+            transition: '0.2s ease all',
+            left: '50%',
+        },
+        ':after': {
+            content: "''",
+            height: '2px',
+            width: '0',
+            bottom: '1px',
+            position: 'absolute',
+            background: '#00bcd4',
+            transition: '0.2s ease all',
+            right: '50%',
+        },
+    },
+    barFocus: {
+        ':before': {
+            width: '50%'
+        },
+        ':after': {
+            width: '50%'
+        }
+    }
 });
 
 export default class SalaryInputComponent extends React.Component {
@@ -53,11 +79,11 @@ export default class SalaryInputComponent extends React.Component {
     }
 
     render() {
-        const inputGroupClassName = css(s.textFieldWrapper) + this.props.style;
         const labelClassName = this.state.isFocused ? css(s.textFieldLabel, s.textFieldLabelFocus) : css(s.textFieldLabel);
+        const barClassName = this.state.isFocused ? css(s.bar, s.barFocus) : css(s.bar);
 
         return (
-            <div className={inputGroupClassName}>
+            <div className={ css(s.textFieldWrapper)}>
                 <label className={labelClassName}>{this.props.label}
                     {this.props.limit && <small> (Limit: {this.props.limit})</small>}
                 </label>
@@ -65,6 +91,7 @@ export default class SalaryInputComponent extends React.Component {
                        value={this.props.value} className={css(s.textField)}
                        step={this.props.step} min="0" max={this.props.max} onBlur={this._focusChange}
                        onFocus={this._focusChange} onChange={this.props.onChange}/>
+                <span className={barClassName}></span>
             </div>
 
         );
@@ -86,7 +113,6 @@ SalaryInputComponent.propTypes = {
 };
 
 SalaryInputComponent.defaultProps = {
-    style: css(s.inputGroup),
     max: 524288,
     step: 1,
 };
