@@ -9,6 +9,7 @@ import "../stylesheets/App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
 import BasicSalary from "./BasicSalary";
 import Hra from "./Hra";
+import {CONSTANTS} from "../constants";
 
 const s = StyleSheet.create({
     heading: {
@@ -56,8 +57,8 @@ class App extends Component {
             pf: 0,
             employerPf: 0,
             employerEps: 0,
-            professionalTax: 2400,
-            medicalReimbursement: 15000,
+            professionalTax: CONSTANTS.PROF_TAX,
+            medicalReimbursement: CONSTANTS.MED_REIMBURSEMENT,
             conveyance: 19200,
             taxableIncome: 0,
             incomeTax: 0,
@@ -86,30 +87,27 @@ class App extends Component {
             this.setState({[changedInput]: changedValue})
         } else {
             let nextState = _.extend({}, this.state, {[changedInput]: changedValue});
-            this.setState(this._calculateSalaryComponents(nextState));
+            this.setState(App._calculateSalaryComponents(nextState));
         }
     }
 
-    _calculateSalaryComponents(state) {
+    static _calculateSalaryComponents(state) {
         let {
             medicalReimbursement, monthlyRent, metro,
             conveyance, grossSalary, professionalTax, basicPercent, eightyC, eightyCCG, eightyD, eightyE, eightyG
         } = state;
         let basic = _.floor(grossSalary * basicPercent / 100);
-        const pf = _.floor(basic * (12 / 100), 2);
-        const employerPf = _.floor(basic * (3.67 / 100), 2);
-        const employerEps = _.floor(basic * (8.33 / 100), 2);
-        const totalEmployerContribution = employerEps + employerPf;
-        const hra = this._calculateHRA(basic, monthlyRent, metro);
-        medicalReimbursement = medicalReimbursement > 15000 ? 15000 : medicalReimbursement;
-        conveyance = conveyance > 19200 ? 19200 : conveyance;
-        const eightyCLimit = _.floor(150000 - pf, 2);
+        const {pf, employerPf, employerEps, totalEmployerContribution} = App.calculatePFComponents(basic);
+        const hra = App._calculateHRA(basic, monthlyRent, metro);
+        medicalReimbursement = medicalReimbursement > CONSTANTS.MED_REIMBURSEMENT ? CONSTANTS.MED_REIMBURSEMENT : medicalReimbursement;
+        conveyance = conveyance > CONSTANTS.CONVEYANCE ? CONSTANTS.CONVEYANCE : conveyance;
+        const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pf, 2);
         eightyC = (eightyC !== 0 && eightyC > eightyCLimit) ? eightyCLimit : eightyC;
         const totalExemptedInvestments = +eightyC + +eightyCCG + +eightyD + +eightyE + +eightyG;
         const taxableIncome = _.floor(grossSalary - pf - conveyance - medicalReimbursement
             - hra - professionalTax - totalExemptedInvestments, 2);
-        const incomeTax = this._calculateIncomeTax(taxableIncome);
-        const educationCess = _.floor(incomeTax * 0.03, 2);
+        const incomeTax = App._calculateIncomeTax(taxableIncome);
+        const educationCess = _.floor(incomeTax * (CONSTANTS.EDU_CESS_PERCENT / 100), 2);
         const takeHomeSalary = _.floor(grossSalary - incomeTax - educationCess - professionalTax - pf - medicalReimbursement, 2);
         return {
             basic,
@@ -138,25 +136,34 @@ class App extends Component {
         };
     }
 
+    static calculatePFComponents(basic) {
+        const pf = _.floor(basic * (CONSTANTS.PF_PERCENT.TOTAL / 100), 2);
+        const employerPf = _.floor(basic * (CONSTANTS.PF_PERCENT.EMPLOYER / 100), 2);
+        const employerEps = _.floor(basic * (CONSTANTS.PF_PERCENT.EMPLOYEE / 100), 2);
+        const totalEmployerContribution = employerEps + employerPf;
+        return {pf, employerPf, employerEps, totalEmployerContribution};
+    }
+
     _grossSalaryNotEmpty() {
         return (this.state.grossSalary !== 0 && this.state.grossSalary !== "");
     }
 
-    _calculateHRA(basic, monthlyRent, metro) {
+    static _calculateHRA(basic, monthlyRent, metro) {
         if (monthlyRent === 0) {
             return 0;
         }
-        const percentFromBasic = _.floor(metro ? (basic * 0.50) : (basic * 0.40), 2);
+        const percentFromBasic = _.floor(metro ? (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_METRO)
+            : (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_NON_METRO), 2);
         const rentPaidMinusTenPercentOfBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
         return rentPaidMinusTenPercentOfBasic < percentFromBasic ? rentPaidMinusTenPercentOfBasic : percentFromBasic;
     }
 
-    _calculateIncomeTax(taxableIncome) {
+    static _calculateIncomeTax(taxableIncome) {
         let incomeTax = 0;
         const twoAndHalfLakhs = 250000;
         const fiveLakhs = 500000;
         //income above 2.5 lakhs is only taxable
-        taxableIncome -= 250000;
+        taxableIncome -= CONSTANTS.NON_TAXABLE_INCOME;
         if (taxableIncome <= 0) {
             return 0;
         }
@@ -202,7 +209,7 @@ class App extends Component {
                                                   value={this.state.eightyC}
                                                   limit={this.state.eightyCLimit}
                                                   onChange={this._handleInputChange}/>
-                            {this.state.grossSalary <= 1200000 &&
+                            {this.state.grossSalary <= CONSTANTS.MIN_GROSS_FOR_80CCG_RGESS &&
                             <SalaryInputComponent label="80CCG - RGESS " name="eightyCCG"
                                                   value={this.state.eightyCCG}
                                                   limit="50000"
