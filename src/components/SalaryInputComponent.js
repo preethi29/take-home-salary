@@ -82,17 +82,17 @@ export default class SalaryInputComponent extends React.Component {
         const wrapperClassName = this.props.style ? css(s.textFieldWrapper, this.props.style) : css(s.textFieldWrapper);
         const labelClassName = this.state.isFocused ? css(s.textFieldLabel, s.textFieldLabelFocus) : css(s.textFieldLabel);
         const barClassName = this.state.isFocused ? css(s.bar, s.barFocus) : css(s.bar);
-
+        this.value = this.state.isFocused && this.props.value === 0 ? "" : this.props.value;
         return (
-            <div className={ wrapperClassName}>
+            <div className={wrapperClassName}>
                 <label className={labelClassName}>{this.props.label}
                     {this.props.limit && <small> (Limit: {this.props.limit})</small>}
                 </label>
                 <input type="number" name={this.props.name}
-                       value={this.props.value} className={css(s.textField)}
+                       value={this.value} className={css(s.textField)}
                        step={this.props.step} min="0" max={this.props.max} onBlur={this._focusChange}
                        onFocus={this._focusChange} onChange={this.props.onChange}/>
-                <span className={barClassName}></span>
+                <span className={barClassName}/>
             </div>
 
         );
