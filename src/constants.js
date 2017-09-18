@@ -10,14 +10,14 @@ export const CONSTANTS = {
         EMPLOYEE: 8.33
     },
     NON_TAXABLE_INCOME: 250000,
-    SLAB_RATE: [
+    INCOME_TAX_SLABS: [
         {
-            PERCENT: 5,
-            AMOUNT: 250000
+            rate: 5,
+            amount: 250000
         },
         {
-            PERCENT: 20,
-            AMOUNT: 500000
+            rate: 20,
+            amount: 500000
         }
     ],
     SLAB_RATE_FOR_REMAINING_AMOUNT: 30,

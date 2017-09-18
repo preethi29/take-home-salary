@@ -160,29 +160,17 @@ class App extends Component {
 
     static _calculateIncomeTax(taxableIncome) {
         let incomeTax = 0;
-        const twoAndHalfLakhs = 250000;
-        const fiveLakhs = 500000;
-        //income above 2.5 lakhs is only taxable
-        taxableIncome -= CONSTANTS.NON_TAXABLE_INCOME;
+        taxableIncome -= CONSTANTS.NON_TAXABLE_INCOME;  //income above 2.5 lakhs is only taxable
         if (taxableIncome <= 0) {
             return 0;
         }
-        //apply 5% slab rate
-        if (taxableIncome > twoAndHalfLakhs) {
-            incomeTax += twoAndHalfLakhs * 0.05;
-            //apply 20% slab rate
-            taxableIncome -= twoAndHalfLakhs;
-            if (taxableIncome > fiveLakhs) {
-                incomeTax += fiveLakhs * 0.20;
-                taxableIncome -= fiveLakhs;
-                //apply 30% slab rate
-                incomeTax += taxableIncome * 0.30;
-            } else {
-                incomeTax += taxableIncome * 0.20
-            }
-        } else {
-            incomeTax += taxableIncome * 0.05;
-        }
+        incomeTax = CONSTANTS.INCOME_TAX_SLABS.reduce((incomeTax, slab) => {
+            const amount = taxableIncome > slab.amount ? slab.amount : taxableIncome;
+            taxableIncome -= amount;
+            return +incomeTax + +(amount * slab.rate / 100);
+        }, incomeTax);
+
+        incomeTax += taxableIncome * CONSTANTS.SLAB_RATE_FOR_REMAINING_AMOUNT / 100;
         return _.floor(incomeTax, 2);
     }
 
