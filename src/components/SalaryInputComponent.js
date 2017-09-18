@@ -70,12 +70,14 @@ const s = StyleSheet.create({
 });
 
 export default class SalaryInputComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             isFocused: false,
+            value: props.value
         };
         this._focusChange = this._focusChange.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     render() {
@@ -89,13 +91,21 @@ export default class SalaryInputComponent extends React.Component {
                     {this.props.limit && <small> (Limit: {this.props.limit})</small>}
                 </label>
                 <input type="number" name={this.props.name}
-                       value={this.value} className={css(s.textField)}
-                       step={this.props.step} min="0" max={this.props.max} onBlur={this._focusChange}
-                       onFocus={this._focusChange} onChange={this.props.onChange}/>
+                       value={this.state.value} className={css(s.textField)}
+                       step={this.props.step} min="0" max={this.props.limit} onBlur={this._focusChange}
+                       onFocus={this._focusChange} onChange={this._onChange}/>
                 <span className={barClassName}/>
             </div>
 
         );
+    }
+
+    _onChange(event) {
+        if (this.props.limit && Number(event.target.value) > Number(this.props.limit)) {
+            event.target.value = this.props.limit;
+        }
+        this.setState({value: event.target.value});
+        this.props.onChange(event);
     }
 
     _focusChange() {
@@ -108,12 +118,10 @@ SalaryInputComponent.propTypes = {
     name: PropTypes.string,
     value: PropTypes.number,
     onChange: PropTypes.func,
-    max: PropTypes.number,
     limit: PropTypes.string,
     step: PropTypes.number
 };
 
 SalaryInputComponent.defaultProps = {
-    max: 524288,
     step: 1,
 };

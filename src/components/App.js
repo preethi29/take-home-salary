@@ -96,13 +96,11 @@ class App extends Component {
             medicalReimbursement, monthlyRent, metro,
             conveyance, grossSalary, professionalTax, basicPercent, eightyC, eightyCCG, eightyD, eightyE, eightyG
         } = state;
-        let basic = _.floor(grossSalary * basicPercent / 100);
+
+        const basic = _.floor(grossSalary * basicPercent / 100);
         const {pf, employerPf, employerEps, totalEmployerContribution} = App.calculatePFComponents(basic);
         const hra = App._calculateHRA(basic, monthlyRent, metro);
-        medicalReimbursement = medicalReimbursement > CONSTANTS.MED_REIMBURSEMENT ? CONSTANTS.MED_REIMBURSEMENT : medicalReimbursement;
-        conveyance = conveyance > CONSTANTS.CONVEYANCE ? CONSTANTS.CONVEYANCE : conveyance;
         const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pf, 2);
-        eightyC = (eightyC !== 0 && eightyC > eightyCLimit) ? eightyCLimit : eightyC;
         const totalExemptedInvestments = +eightyC + +eightyCCG + +eightyD + +eightyE + +eightyG;
         const taxableIncome = _.floor(grossSalary - pf - conveyance - medicalReimbursement
             - hra - professionalTax - totalExemptedInvestments, 2);
