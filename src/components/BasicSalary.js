@@ -35,9 +35,9 @@ export default class BasicSalary extends React.Component {
                     (this.props.basicPercent !== '30' && this.props.basicPercent !== '40' ? 'active' : '')}>
                     <input type="radio" value="0" name="basicPercent" onChange={this.props.onChange}
                            checked={this.props.basicPercent !== '30' && this.props.basicPercent !== '40'}/>
-                    <span>Other</span>
+                    <span>Other %</span>
                     {this.props.basicPercent !== '30' && this.props.basicPercent !== '40' &&
-                    <input type="number" name="basicPercent" value={this.props.basicPercent}
+                    <input type="number" name="basicPercent" value={this.props.basicPercent} placeholder="In percentage"
                            className={css(s.otherBasicPercent)}
                            onChange={this.props.onChange}/>
 

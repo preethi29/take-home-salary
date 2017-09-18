@@ -9,6 +9,7 @@ import "../stylesheets/App.css";
 import SalaryInputComponent from "./SalaryInputComponent";
 import BasicSalary from "./BasicSalary";
 import Hra from "./Hra";
+
 const s = StyleSheet.create({
     heading: {
         marginTop: '8px',
@@ -71,7 +72,8 @@ class App extends Component {
             eightyG: 0,
             basicPercent: '30',
             monthlyRent: 0,
-            metro: false
+            metro: false,
+            totalExemptedInvestments: 0,
         };
         this._handleInputChange = this._handleInputChange.bind(this);
         this._grossSalaryNotEmpty = this._grossSalaryNotEmpty.bind(this);
@@ -101,10 +103,11 @@ class App extends Component {
         const hra = this._calculateHRA(basic, monthlyRent, metro);
         medicalReimbursement = medicalReimbursement > 15000 ? 15000 : medicalReimbursement;
         conveyance = conveyance > 19200 ? 19200 : conveyance;
-        const eightyCLimit = 150000 - pf;
+        const eightyCLimit = _.floor(150000 - pf, 2);
         eightyC = (eightyC !== 0 && eightyC > eightyCLimit) ? eightyCLimit : eightyC;
+        const totalExemptedInvestments = +eightyC + +eightyCCG + +eightyD + +eightyE + +eightyG;
         const taxableIncome = _.floor(grossSalary - pf - conveyance - medicalReimbursement
-            - hra - professionalTax - eightyC - eightyCCG - eightyD - eightyE - eightyG, 2);
+            - hra - professionalTax - totalExemptedInvestments, 2);
         const incomeTax = this._calculateIncomeTax(taxableIncome);
         const educationCess = _.floor(incomeTax * 0.03, 2);
         const takeHomeSalary = _.floor(grossSalary - incomeTax - educationCess - professionalTax - pf - medicalReimbursement, 2);
@@ -130,7 +133,8 @@ class App extends Component {
             eightyD,
             eightyE,
             eightyG,
-            educationCess
+            educationCess,
+            totalExemptedInvestments
         };
     }
 
@@ -189,7 +193,7 @@ class App extends Component {
 
                         <BasicSalary basicPercent={this.state.basicPercent} onChange={this._handleInputChange}/>
 
-                        { this._grossSalaryNotEmpty() &&
+                        {this._grossSalaryNotEmpty() &&
                         <div className={css(s.optionalInputs)}>
                             <Hra onChange={this._handleInputChange} monthlyRent={this.state.monthlyRent}
                                  metro={this.state.metro}/>
@@ -213,11 +217,12 @@ class App extends Component {
                             <SalaryInputComponent label="80G - Donations" name="eightyG"
                                                   value={this.state.eightyG}
                                                   onChange={this._handleInputChange}/>
+                            <h4>Total Exempted Investments: {this.state.totalExemptedInvestments}</h4>
                         </div>
                         }
 
                     </div>
-                    { this._grossSalaryNotEmpty() &&
+                    {this._grossSalaryNotEmpty() &&
                     <div className={css(s.appCalculated)}>
                         <table className="table table-responsive">
                             <thead>
@@ -234,7 +239,7 @@ class App extends Component {
                                 <td>{this.state.basic}</td>
                             </tr>
                             <tr>
-                                <td>HRA</td>
+                                <td>HRA Exempted</td>
                                 <td>{_.floor(this.state.hra / 12, 2)}</td>
                                 <td>{this.state.hra}</td>
                             </tr>
@@ -271,13 +276,13 @@ class App extends Component {
                             </tr>
                             <tr>
                                 <td>Education Cess</td>
-                                <td>{_.floor(this.state.educationCess / 12, 2) }</td>
-                                <td>{this.state.educationCess }</td>
+                                <td>{_.floor(this.state.educationCess / 12, 2)}</td>
+                                <td>{this.state.educationCess}</td>
                             </tr>
                             <tr className={css(s.bold)}>
                                 <td>Take Home Salary</td>
-                                <td>{_.floor(this.state.takeHomeSalary / 12, 2) }</td>
-                                <td>{this.state.takeHomeSalary }</td>
+                                <td>{_.floor(this.state.takeHomeSalary / 12, 2)}</td>
+                                <td>{this.state.takeHomeSalary}</td>
                             </tr>
                             </tbody>
                         </table>
