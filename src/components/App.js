@@ -10,6 +10,7 @@ import SalaryInputComponent from "./SalaryInputComponent";
 import BasicSalary from "./BasicSalary";
 import Hra from "./Hra";
 import {CONSTANTS} from "../constants";
+import InvestmentsInput from "./InvestmentsInput";
 
 const s = StyleSheet.create({
     heading: {
@@ -82,17 +83,14 @@ class App extends Component {
             gratuity: 0,
             grossSalary: 0,
             totalEmployerContribution: 0,
-            eightyC: 0,
-            eightyCCG: 0,
-            eightyD: 0,
-            eightyE: 0,
-            eightyG: 0,
             basicPercent: '30',
             monthlyRent: 0,
             metro: false,
+            eightyCLimit: 0,
             totalExemptedInvestments: 0,
         };
         this._handleInputChange = this._handleInputChange.bind(this);
+        this._updateState = this._updateState.bind(this);
         this._grossSalaryNotEmpty = this._grossSalaryNotEmpty.bind(this);
     }
 
@@ -102,22 +100,25 @@ class App extends Component {
         if (changedInput === 'basicPercent' && changedValue === 'Other') {
             this.setState({[changedInput]: changedValue})
         } else {
-            let nextState = _.extend({}, this.state, {[changedInput]: changedValue});
-            this.setState(App._calculateSalaryComponents(nextState));
+            this._updateState(changedInput, changedValue);
         }
+    }
+
+    _updateState(changedInput, changedValue) {
+        let nextState = _.extend({}, this.state, {[changedInput]: changedValue});
+        this.setState(App._calculateSalaryComponents(nextState));
     }
 
     static _calculateSalaryComponents(state) {
         let {
             medicalReimbursement, monthlyRent, metro,
-            conveyance, grossSalary, professionalTax, basicPercent, eightyC, eightyCCG, eightyD, eightyE, eightyG
+            conveyance, grossSalary, professionalTax, basicPercent, totalExemptedInvestments
         } = state;
 
         const basic = _.floor(grossSalary * basicPercent / 100);
         const {pf, employerPf, employerEps, totalEmployerContribution} = App.calculatePFComponents(basic);
         const hra = App._calculateHRA(basic, monthlyRent, metro);
         const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pf, 2);
-        const totalExemptedInvestments = +eightyC + +eightyCCG + +eightyD + +eightyE + +eightyG;
         const taxableIncome = _.floor(grossSalary - pf - conveyance - medicalReimbursement
             - hra - professionalTax - totalExemptedInvestments, 2);
         const incomeTax = App._calculateIncomeTax(taxableIncome);
@@ -139,13 +140,8 @@ class App extends Component {
             incomeTax,
             taxableIncome,
             takeHomeSalary,
-            eightyC,
-            eightyCLimit,
-            eightyCCG,
-            eightyD,
-            eightyE,
-            eightyG,
             educationCess,
+            eightyCLimit,
             totalExemptedInvestments
         };
     }
@@ -206,27 +202,7 @@ class App extends Component {
                         <div className={css(s.optionalInputs)}>
                             <Hra onChange={this._handleInputChange} monthlyRent={this.state.monthlyRent}
                                  metro={this.state.metro}/>
-                            <h4>Investments</h4>
-                            <SalaryInputComponent label="80C, 80CC" name="eightyC"
-                                                  value={this.state.eightyC}
-                                                  limit={this.state.eightyCLimit}
-                                                  onChange={this._handleInputChange}/>
-                            {this.state.grossSalary <= CONSTANTS.MIN_GROSS_FOR_80CCG_RGESS &&
-                            <SalaryInputComponent label="80CCG - RGESS " name="eightyCCG"
-                                                  value={this.state.eightyCCG}
-                                                  limit="50000"
-                                                  onChange={this._handleInputChange}/>
-                            }
-                            <SalaryInputComponent label="80CCG - Medical Premimum " name="eightyD"
-                                                  value={this.state.eightyD} limit="40000"
-                                                  onChange={this._handleInputChange}/>
-                            <SalaryInputComponent label="80E - Interest on Edu. loan " name="eightyE"
-                                                  value={this.state.eightyE}
-                                                  onChange={this._handleInputChange}/>
-                            <SalaryInputComponent label="80G - Donations" name="eightyG"
-                                                  value={this.state.eightyG}
-                                                  onChange={this._handleInputChange}/>
-                            <h4>Total Exempted Investments: {this.state.totalExemptedInvestments}</h4>
+                            <InvestmentsInput eightyCLimit={this.state.eightyCLimit} onChange={this._updateState}/>
                         </div>
                         }
 
@@ -244,7 +220,7 @@ class App extends Component {
                             </thead>
                             <tbody>
                             {this.tableViewModel.map((row, index) => {
-                                return <tr>
+                                return <tr key={index}>
                                     <td className={css(s.tableCell)}>{index + 1}</td>
                                     <td className={css(s.tableCell)}>{row.label} {row.formula &&
                                     <small className={css(s.formula)}> {row.formula}</small>}</td>
