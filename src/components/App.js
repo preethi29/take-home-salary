@@ -11,6 +11,7 @@ import BasicSalary from "./BasicSalary";
 import Hra from "./Hra";
 import {CONSTANTS} from "../constants";
 import InvestmentsInput from "./InvestmentsInput";
+import Calculations from "./Calculations";
 
 const s = StyleSheet.create({
     heading: {
@@ -64,7 +65,7 @@ class App extends Component {
             {label: 'Medical Reimbursement', value: 'medicalReimbursement'},
             {label: 'Employee PF', value: 'pf', formula: '(12% Basic)'},
             {label: 'Professional Tax', value: 'professionalTax'},
-            {label: 'Taxable Income', value: 'taxableIncome', formula: '(Gross-2-3-4-5-6-Investments)'},
+            {label: 'Taxable Income', value: 'taxableIncome', formula: '(Gross- sum of 2 to 6 - Investments)'},
             {label: 'Income Tax', value: 'incomeTax'},
             {label: 'Education Cess', value: 'educationCess'},
             {label: 'Take Home Salary', value: 'takeHomeSalary', className: 'bold', noIndex: true},
@@ -196,7 +197,6 @@ class App extends Component {
                     <div className={css(s.appInputs)}>
                         <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary" step="100000"
                                               value={this.state.grossSalary} onChange={this._handleInputChange}/>
-
                         <BasicSalary basicPercent={this.state.basicPercent} onChange={this._handleInputChange}/>
 
                         {this._grossSalaryNotEmpty() &&
@@ -234,8 +234,8 @@ class App extends Component {
                             </tbody>
                         </table>
 
-                        {/*<PFDetails pf={this.state.pf} employerPf={this.state.employerPf}*/}
-                        {/*employerEps={this.state.employerEps}/>*/}
+                        <Calculations pf={this.state.pf} employerPf={this.state.employerPf}
+                                      employerEps={this.state.employerEps}/>
                     </div>
                     }
                 </div>
