@@ -10,6 +10,8 @@ import {CONSTANTS} from "../constants";
 import InvestmentsInput from "./InvestmentsInput";
 import Calculations from "./Calculations";
 import Calculator from "../utils/Calculator";
+import {setPFDetails} from "../redux-store/actions";
+import {connect} from "react-redux";
 
 const s = StyleSheet.create({
     appContent: {
@@ -49,27 +51,28 @@ const s = StyleSheet.create({
     }
 });
 
-export default class AppContent extends Component {
+class AppContent extends Component {
 
     constructor() {
         super();
-        this.tableViewModel = [{label: 'Basic Salary', value: 'basic'},
-            {label: 'HRA exempted', value: 'hra'},
-            {label: 'Conveyance allowance', value: 'conveyance'},
-            {label: 'Medical Reimbursement', value: 'medicalReimbursement'},
-            {label: 'Employee PF', value: 'pf', formula: '(12% Basic)'},
-            {label: 'Professional Tax', value: 'professionalTax'},
-            {label: 'Taxable Income', value: 'taxableIncome', formula: '(Gross- sum of 2 to 6 - Investments)'},
-            {label: 'Income Tax', value: 'incomeTax'},
-            {label: 'Education Cess', value: 'educationCess'},
-            {label: 'Take Home Salary', value: 'takeHomeSalary', className: 'bold', noIndex: true},
+        this.tableViewModel = [{label: 'Basic Salary', get: (() => this.state.basic)},
+            {label: 'HRA exempted', get: (() => this.state.hra)},
+            {label: 'Conveyance allowance', get: (() => this.state.conveyance)},
+            {label: 'Medical Reimbursement', get: (() => this.state.medicalReimbursement)},
+            {label: 'Employee PF', formula: '(12% Basic)', get: (() => this.props.pfDetails.pf)},
+            {label: 'Professional Tax', get: (() => this.state.professionalTax)},
+            {
+                label: 'Taxable Income',
+                get: (() => this.state.taxableIncome),
+                formula: '(Gross- sum of 2 to 6 - Investments)'
+            },
+            {label: 'Income Tax', get: (() => this.state.incomeTax)},
+            {label: 'Education Cess', get: (() => this.state.educationCess)},
+            {label: 'Take Home Salary', get: (() => this.state.takeHomeSalary), className: 'bold', noIndex: true},
         ];
         this.state = {
             basic: 0,
             hra: 0,
-            pf: 0,
-            employerPf: 0,
-            employerEps: 0,
             professionalTax: CONSTANTS.PROF_TAX,
             medicalReimbursement: CONSTANTS.MED_REIMBURSEMENT,
             conveyance: 19200,
@@ -78,7 +81,6 @@ export default class AppContent extends Component {
             educationCess: 0,
             gratuity: 0,
             grossSalary: 0,
-            totalEmployerContribution: 0,
             basicPercent: '30',
             monthlyRent: 0,
             metro: false,
@@ -102,7 +104,9 @@ export default class AppContent extends Component {
 
     _updateState(changedInput, changedValue) {
         let nextState = _.extend({}, this.state, {[changedInput]: changedValue});
-        this.setState(Calculator.calculateSalaryComponents(nextState));
+        let salaryComponents = Calculator.calculateSalaryComponents(nextState);
+        this.props.setPFDetails(salaryComponents.pfDetails);
+        this.setState(salaryComponents);
     }
 
 
@@ -146,18 +150,37 @@ export default class AppContent extends Component {
                                     {row.label} {row.formula &&
                                 <small className={css(s.formula)}> {row.formula}</small>}
                                 </td>
-                                <td className={css(s.tableCell)}>{_.floor(this.state[row.value] / 12, 2)}</td>
-                                <td className={css(s.tableCell)}>{this.state[row.value]}</td>
+                                <td className={css(s.tableCell)}>{_.floor(row.get() / 12, 2)}</td>
+                                <td className={css(s.tableCell)}>{row.get()}</td>
                             </tr>
                         })}
                         </tbody>
                     </table>
 
-                    <Calculations pf={this.state.pf} employerPf={this.state.employerPf}
-                                  employerEps={this.state.employerEps}/>
+                    <Calculations/>
                 </div>
                 }
             </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        pfDetails: state.pfDetails
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setPFDetails: pfDetails => {
+            dispatch(setPFDetails(pfDetails))
+        }
+    }
+};
+
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AppContent);

@@ -9,6 +9,5 @@ export const SET_PF_DETAILS = 'SET_PF_DETAILS'
  */
 
 export function setPFDetails(pfDetails) {
-    return {type: SET_PF_DETAILS, pfDetails
-    }
+    return {type: SET_PF_DETAILS, pfDetails}
 }

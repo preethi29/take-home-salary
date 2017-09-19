@@ -2,9 +2,10 @@ import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import _ from "lodash";
 import PropTypes from 'prop-types';
+import {connect} from "react-redux";
 
 
-export default class PFDetails extends React.Component {
+class PFDetails extends React.Component {
     render() {
         return (
             <div>
@@ -45,3 +46,16 @@ PFDetails.propTypes = {
     employerPf: PropTypes.number.isRequired,
     employerEps: PropTypes.number.isRequired,
 };
+
+const mapStateToProps = state => {
+    return {
+        pf: state.pfDetails.pf,
+        employerPf: state.pfDetails.employerPf,
+        employerEps: state.pfDetails.employerEps
+    }
+};
+
+
+export default connect(
+    mapStateToProps,
+)(PFDetails);

@@ -9,25 +9,22 @@ export default class Calculator {
         } = state;
 
         const basic = _.floor(grossSalary * basicPercent / 100);
-        const {pf, employerPf, employerEps, totalEmployerContribution} = Calculator.calculatePFComponents(basic);
+        const pfDetails = Calculator.calculatePFComponents(basic);
         const hra = Calculator.calculateHRA(basic, monthlyRent, metro);
-        const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pf, 2);
-        const taxableIncome = _.floor(grossSalary - pf - conveyance - medicalReimbursement
+        const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pfDetails.pf, 2);
+        const taxableIncome = _.floor(grossSalary - pfDetails.pf - conveyance - medicalReimbursement
             - hra - professionalTax - totalExemptedInvestments, 2);
         const incomeTax = Calculator.calculateIncomeTax(taxableIncome);
         const educationCess = _.floor(incomeTax * (CONSTANTS.EDU_CESS_PERCENT / 100), 2);
-        const takeHomeSalary = _.floor(grossSalary - incomeTax - educationCess - professionalTax - pf - medicalReimbursement, 2);
+        const takeHomeSalary = _.floor(grossSalary - incomeTax - educationCess - professionalTax - pfDetails.pf - medicalReimbursement, 2);
         return {
             basic,
             metro,
-            pf,
-            totalEmployerContribution,
+            pfDetails,
             grossSalary,
             basicPercent,
             conveyance,
             monthlyRent,
-            employerPf,
-            employerEps,
             medicalReimbursement,
             hra,
             incomeTax,
@@ -44,7 +41,6 @@ export default class Calculator {
         const employerPf = _.floor(basic * (CONSTANTS.PF_PERCENT.EMPLOYER / 100), 2);
         const employerEps = _.floor(basic * (CONSTANTS.PF_PERCENT.EMPLOYEE / 100), 2);
         const totalEmployerContribution = employerEps + employerPf;
-        // store.dispatch({type: SET_PF_DETAILS, pfDetails: {pf, employerPf, employerEps, totalEmployerContribution}});
         return {pf, employerPf, employerEps, totalEmployerContribution};
     }
 
@@ -73,6 +69,4 @@ export default class Calculator {
         incomeTax += taxableIncome * CONSTANTS.SLAB_RATE_FOR_REMAINING_AMOUNT / 100;
         return _.floor(incomeTax, 2);
     }
-
-
 }
