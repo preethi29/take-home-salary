@@ -67,6 +67,7 @@ class App extends Component {
             {label: 'Taxable Income', value: 'taxableIncome', formula: '(Gross-2-3-4-5-6-Investments)'},
             {label: 'Income Tax', value: 'incomeTax'},
             {label: 'Education Cess', value: 'educationCess'},
+            {label: 'Take Home Salary', value: 'takeHomeSalary', className: 'bold', noIndex: true},
         ];
         this.state = {
             basic: 0,
@@ -220,20 +221,16 @@ class App extends Component {
                             </thead>
                             <tbody>
                             {this.tableViewModel.map((row, index) => {
-                                return <tr key={index}>
-                                    <td className={css(s.tableCell)}>{index + 1}</td>
-                                    <td className={css(s.tableCell)}>{row.label} {row.formula &&
-                                    <small className={css(s.formula)}> {row.formula}</small>}</td>
+                                return <tr key={index} className={css(s[row.className])}>
+                                    <td className={css(s.tableCell)}>{row.noIndex ? "" : index + 1}</td>
+                                    <td className={css(s.tableCell)}>
+                                        {row.label} {row.formula &&
+                                    <small className={css(s.formula)}> {row.formula}</small>}
+                                    </td>
                                     <td className={css(s.tableCell)}>{_.floor(this.state[row.value] / 12, 2)}</td>
                                     <td className={css(s.tableCell)}>{this.state[row.value]}</td>
                                 </tr>
                             })}
-                            <tr className={css(s.bold)}>
-                                <td className={css(s.tableCell)}/>
-                                <td className={css(s.tableCell)}>Take Home Salary</td>
-                                <td className={css(s.tableCell)}>{_.floor(this.state.takeHomeSalary / 12, 2)}</td>
-                                <td className={css(s.tableCell)}>{this.state.takeHomeSalary}</td>
-                            </tr>
                             </tbody>
                         </table>
 
