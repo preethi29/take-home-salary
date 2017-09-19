@@ -8,20 +8,30 @@ const s = StyleSheet.create({
     },
     tabs: {
         padding: '0',
+        position: 'relative',
         boxSizing: 'border-box',
-        display: 'table',
+        display: 'flex',
         tableLayout: 'fixed',
         width: '100%',
         boxShadow: 'rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px'
     },
     tab: {
-        display: 'table-cell',
+        display: 'inline-block',
+        flex: '1 0 0',
         textAlign: 'center',
         padding: '0.8em 0',
-        cursor: 'pointer'
+        cursor: 'pointer',
     },
-    active: {
-        borderBottom: '0.2em solid #00bcd4'
+    activeBar: {
+        position: 'absolute',
+        height: '0.25em',
+        width: 'calc(100% /3)',
+        bottom: '0',
+        left: '0',
+        listStyleType: 'none',
+        flexGrow: '0',
+        background: '#00bcd4',
+        transition: 'left .3s ease-in-out'
     },
     calcView: {
         paddingTop: '1em'
@@ -62,7 +72,8 @@ export default class Calculations extends React.Component {
                 <ul className={css(s.tabs)}>
                     {this.calculatedComponents.map((comp, index) => <li key={index} onClick={()=>{this._switchCurrentComp(comp)}}
                                                                         className={this.state.currentCalculatedComponent === comp ?
-                                                                            css(s.tab, s.active) : css(s.tab)}>{comp}</li>)}
+                                                                            "active tab "+css(s.tab) : "tab "+css(s.tab)}>{comp}</li>)}
+                    <li className={"active-bar "+css(s.activeBar)}/>
                 </ul>
                 {currentComp}
             </div>

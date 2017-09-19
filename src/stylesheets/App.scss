@@ -78,3 +78,19 @@ input[type='checkbox'] {
     white-space: normal;
   }
 }
+
+@mixin tab {
+  @for $i from 1 through 3 {
+    &:nth-of-type(#{$i}) {
+      &.active {
+        ~ .active-bar {
+          left: calc((100% / #{3}) * #{$i - 1}) !important;
+        }
+      }
+    }
+  }
+}
+
+.tab{
+  @include tab;
+}
