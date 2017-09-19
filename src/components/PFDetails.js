@@ -1,7 +1,6 @@
 import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import _ from "lodash";
-import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 
@@ -9,7 +8,6 @@ class PFDetails extends React.Component {
     render() {
         return (
             <div>
-                <h4>PF Details</h4>
                 <table className="table">
                     <thead>
                     <tr>

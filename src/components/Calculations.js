@@ -18,6 +18,7 @@ const s = StyleSheet.create({
         display: 'table-cell',
         textAlign: 'center',
         padding: '0.8em 0',
+        cursor: 'pointer'
     },
     active: {
         borderBottom: '0.2em solid #00bcd4'
@@ -40,6 +41,7 @@ export default class Calculations extends React.Component {
             currentCalculatedComponent: 'PF'
         };
         this._toggle = this._toggle.bind(this);
+        this._switchCurrentComp = this._switchCurrentComp.bind(this);
     }
 
     render() {
@@ -58,7 +60,7 @@ export default class Calculations extends React.Component {
             {this.state.show &&
             <div className={css(s.calcView)}>
                 <ul className={css(s.tabs)}>
-                    {this.calculatedComponents.map((comp, index) => <li key={index}
+                    {this.calculatedComponents.map((comp, index) => <li key={index} onClick={()=>{this._switchCurrentComp(comp)}}
                                                                         className={this.state.currentCalculatedComponent === comp ?
                                                                             css(s.tab, s.active) : css(s.tab)}>{comp}</li>)}
                 </ul>
@@ -70,5 +72,9 @@ export default class Calculations extends React.Component {
 
     _toggle() {
         this.setState({'show': !this.state.show})
+    }
+
+    _switchCurrentComp(comp) {
+        this.setState({currentCalculatedComponent: comp});
     }
 }
