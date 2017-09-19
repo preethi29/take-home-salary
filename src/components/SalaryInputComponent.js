@@ -17,6 +17,7 @@ const s = StyleSheet.create({
         color: '#676767',
         width: '100%',
         textAlign: 'left',
+        marginBottom: '0'
     },
     textFieldLabelFocus: {
         color: '#00bcd4',

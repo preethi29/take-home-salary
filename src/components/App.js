@@ -51,6 +51,16 @@ class App extends Component {
 
     constructor() {
         super();
+        this.tableViewModel = [{label: 'Basic Salary', value: 'basic'},
+            {label: 'HRA exempted', value: 'hra'},
+            {label: 'Conveyance allowance', value: 'conveyance'},
+            {label: 'Medical Reimbursement', value: 'medicalReimbursement'},
+            {label: 'Employee PF (12% Basic)', value: 'pf'},
+            {label: 'Professional Tax', value: 'professionalTax'},
+            {label: 'Taxable Income', value: 'taxableIncome'},
+            {label: 'Income Tax', value: 'incomeTax'},
+            {label: 'Education Cess', value: 'educationCess'},
+        ];
         this.state = {
             basic: 0,
             hra: 0,
@@ -220,59 +230,23 @@ class App extends Component {
                         <table className="table table-responsive">
                             <thead>
                             <tr>
+                                <th/>
                                 <th>Component</th>
                                 <th>Monthly</th>
                                 <th>Yearly</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Basic Salary</td>
-                                <td>{_.floor(this.state.basic / 12, 2)}</td>
-                                <td>{this.state.basic}</td>
-                            </tr>
-                            <tr>
-                                <td>HRA Exempted</td>
-                                <td>{_.floor(this.state.hra / 12, 2)}</td>
-                                <td>{this.state.hra}</td>
-                            </tr>
-                            <tr>
-                                <td>Conveyance Allowance</td>
-                                <td>{_.floor(this.state.conveyance / 12, 2)}</td>
-                                <td>{this.state.conveyance}</td>
-                            </tr>
-                            <tr>
-                                <td>Medical Reimbursement
-                                </td>
-                                <td>{_.floor(this.state.medicalReimbursement / 12, 2)}</td>
-                                <td>{this.state.medicalReimbursement}</td>
-                            </tr>
-                            <tr>
-                                <td>Employee PF (12% Basic)</td>
-                                <td>{_.floor(this.state.pf / 12, 2)}</td>
-                                <td>{this.state.pf}</td>
-                            </tr>
-                            <tr>
-                                <td>Professional Tax</td>
-                                <td>{_.floor(this.state.professionalTax / 12, 2)}</td>
-                                <td>{this.state.professionalTax}</td>
-                            </tr>
-                            <tr>
-                                <td>Taxable Income</td>
-                                <td>{_.floor(this.state.taxableIncome / 12, 2)}</td>
-                                <td>{this.state.taxableIncome}</td>
-                            </tr>
-                            <tr>
-                                <td>Income Tax</td>
-                                <td>{_.floor(this.state.incomeTax / 12, 2)}</td>
-                                <td>{this.state.incomeTax}</td>
-                            </tr>
-                            <tr>
-                                <td>Education Cess</td>
-                                <td>{_.floor(this.state.educationCess / 12, 2)}</td>
-                                <td>{this.state.educationCess}</td>
-                            </tr>
+                            {this.tableViewModel.map((row, index) => {
+                                return <tr>
+                                    <td>{index+1}</td>
+                                    <td>{row.label}</td>
+                                    <td>{_.floor(this.state[row.value] / 12, 2)}</td>
+                                    <td>{this.state[row.value]}</td>
+                                </tr>
+                            })}
                             <tr className={css(s.bold)}>
+                                <td/>
                                 <td>Take Home Salary</td>
                                 <td>{_.floor(this.state.takeHomeSalary / 12, 2)}</td>
                                 <td>{this.state.takeHomeSalary}</td>
