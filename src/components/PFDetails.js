@@ -41,12 +41,6 @@ class PFDetails extends React.Component {
     }
 }
 
-PFDetails.propTypes = {
-    pf: PropTypes.number.isRequired,
-    employerPf: PropTypes.number.isRequired,
-    employerEps: PropTypes.number.isRequired,
-};
-
 const mapStateToProps = state => {
     return {
         pf: state.pfDetails.pf,

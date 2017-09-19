@@ -5,6 +5,25 @@ import PFDetails from "./PFDetails";
 const s = StyleSheet.create({
     calcButton: {
         fontSize: '1.1em'
+    },
+    tabs: {
+        padding: '0',
+        boxSizing: 'border-box',
+        display: 'table',
+        tableLayout: 'fixed',
+        width: '100%',
+        boxShadow: 'rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px'
+    },
+    tab: {
+        display: 'table-cell',
+        textAlign: 'center',
+        padding: '0.8em 0',
+    },
+    active: {
+        borderBottom: '0.2em solid #00bcd4'
+    },
+    calcView: {
+        paddingTop: '1em'
     }
 });
 export default class Calculations extends React.Component {
@@ -17,7 +36,7 @@ export default class Calculations extends React.Component {
             'Income Tax'
         ];
         this.state = {
-            show: false,
+            show: true,
             currentCalculatedComponent: 'PF'
         };
         this._toggle = this._toggle.bind(this);
@@ -27,8 +46,7 @@ export default class Calculations extends React.Component {
         let currentComp;
         switch (this.state.currentCalculatedComponent) {
             case 'PF':
-                currentComp = <PFDetails pf={this.props.pf} employerPf={this.props.employerPf}
-                                         employerEps={this.props.employerEps}/>;
+                currentComp = <PFDetails/>;
                 break;
             default:
                 break;
@@ -37,7 +55,16 @@ export default class Calculations extends React.Component {
         return <div>
             <label className={"button " + css(s.calcButton)}
                    onClick={this._toggle}>{this.state.show ? 'Hide Calculations' : 'Show Calculations'} </label>
-            {this.state.show && currentComp}
+            {this.state.show &&
+            <div className={css(s.calcView)}>
+                <ul className={css(s.tabs)}>
+                    {this.calculatedComponents.map((comp, index) => <li key={index}
+                                                                        className={this.state.currentCalculatedComponent === comp ?
+                                                                            css(s.tab, s.active) : css(s.tab)}>{comp}</li>)}
+                </ul>
+                {currentComp}
+            </div>
+            }
         </div>
     }
 
