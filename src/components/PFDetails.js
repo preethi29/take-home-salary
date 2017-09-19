@@ -19,18 +19,18 @@ class PFDetails extends React.Component {
                     <tbody>
                     <tr>
                         <td>Employee's Contribution to PF (12% of Basic)</td>
+                        <td>{_.floor(this.props.pf/12, 2)}</td>
                         <td>{this.props.pf}</td>
-                        <td>{this.props.pf * 12}</td>
                     </tr>
                     <tr>
                         <td>Employer's Contribution to PF (3.67% of Basic)</td>
+                        <td>{_.floor(this.props.employerPf / 12, 2)}</td>
                         <td>{this.props.employerPf}</td>
-                        <td>{_.floor(this.props.employerPf * 12, 2)}</td>
                     </tr>
                     <tr>
                         <td>Employer's Contribution to EPS (8.33% of Basic)</td>
+                        <td>{_.floor(this.props.employerEps / 12, 2)}</td>
                         <td>{this.props.employerEps}</td>
-                        <td>{_.floor(this.props.employerEps * 12, 2)}</td>
                     </tr>
                     </tbody>
                 </table>
