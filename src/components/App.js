@@ -45,6 +45,12 @@ const s = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: '1.142em',
     },
+    tableCell: {
+        padding: '0.3em'
+    },
+    formula: {
+        color: 'grey'
+    }
 });
 
 class App extends Component {
@@ -55,9 +61,9 @@ class App extends Component {
             {label: 'HRA exempted', value: 'hra'},
             {label: 'Conveyance allowance', value: 'conveyance'},
             {label: 'Medical Reimbursement', value: 'medicalReimbursement'},
-            {label: 'Employee PF (12% Basic)', value: 'pf'},
+            {label: 'Employee PF', value: 'pf', formula: '(12% Basic)'},
             {label: 'Professional Tax', value: 'professionalTax'},
-            {label: 'Taxable Income', value: 'taxableIncome'},
+            {label: 'Taxable Income', value: 'taxableIncome', formula: '(Gross-2-3-4-5-6-Investments)'},
             {label: 'Income Tax', value: 'incomeTax'},
             {label: 'Education Cess', value: 'educationCess'},
         ];
@@ -239,17 +245,18 @@ class App extends Component {
                             <tbody>
                             {this.tableViewModel.map((row, index) => {
                                 return <tr>
-                                    <td>{index+1}</td>
-                                    <td>{row.label}</td>
-                                    <td>{_.floor(this.state[row.value] / 12, 2)}</td>
-                                    <td>{this.state[row.value]}</td>
+                                    <td className={css(s.tableCell)}>{index + 1}</td>
+                                    <td className={css(s.tableCell)}>{row.label} {row.formula &&
+                                    <small className={css(s.formula)}> {row.formula}</small>}</td>
+                                    <td className={css(s.tableCell)}>{_.floor(this.state[row.value] / 12, 2)}</td>
+                                    <td className={css(s.tableCell)}>{this.state[row.value]}</td>
                                 </tr>
                             })}
                             <tr className={css(s.bold)}>
-                                <td/>
-                                <td>Take Home Salary</td>
-                                <td>{_.floor(this.state.takeHomeSalary / 12, 2)}</td>
-                                <td>{this.state.takeHomeSalary}</td>
+                                <td className={css(s.tableCell)}/>
+                                <td className={css(s.tableCell)}>Take Home Salary</td>
+                                <td className={css(s.tableCell)}>{_.floor(this.state.takeHomeSalary / 12, 2)}</td>
+                                <td className={css(s.tableCell)}>{this.state.takeHomeSalary}</td>
                             </tr>
                             </tbody>
                         </table>
