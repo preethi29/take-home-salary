@@ -36,7 +36,7 @@ export default class Calculations extends React.Component {
             'Income Tax'
         ];
         this.state = {
-            show: true,
+            show: false,
             currentCalculatedComponent: 'PF'
         };
         this._toggle = this._toggle.bind(this);
