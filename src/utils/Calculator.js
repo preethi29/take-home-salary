@@ -48,8 +48,8 @@ export default class Calculator {
         if (monthlyRent === 0) {
             return 0;
         }
-        const percentFromBasic = _.floor(metro ? (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_METRO)
-            : (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_NON_METRO), 2);
+        const percentFromBasic = _.floor(metro ? (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_METRO / 100)
+            : (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_NON_METRO / 100), 2);
         const rentPaidMinusTenPercentOfBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
         return rentPaidMinusTenPercentOfBasic < percentFromBasic ? rentPaidMinusTenPercentOfBasic : percentFromBasic;
     }
