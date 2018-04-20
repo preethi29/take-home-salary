@@ -33,18 +33,29 @@ const s = StyleSheet.create({
 export default class Hra extends Component {
 
     render() {
-        return (<div className={css(s.hra)}>
+        return (
+            <div>
+                <div className={css(s.hra)}>
 
-            <SalaryInputComponent label="Monthly Rent" name="monthlyRent" style={s.monthlyRent}
-                                  value={this.props.monthlyRent} step="500"
-                                  onChange={this.props.onChange}/>
-            <div className={css(s.metro)}>
-                <label className={"button " + ( this.props.metro ? ' active' : '')}>
-                    <input type="checkbox" name="metro" checked={this.props.metro}
-                           onChange={this.props.onChange}/> Living in Metro
-                </label>
-            </div>
-        </div>);
+                    <SalaryInputComponent label="Monthly Rent" name="monthlyRent" style={s.monthlyRent}
+                                          value={this.props.monthlyRent} step="500"
+                                          onChange={this.props.onChange}/>
+                    <div className={css(s.metro)}>
+                        <label className={"button " + (this.props.metro ? ' active' : '')}>
+                            <input type="checkbox" name="metro" checked={this.props.metro}
+                                   onChange={this.props.onChange}/> Living in Metro
+                        </label>
+                    </div>
+                </div>
+                <div className={css(s.hra)}>
+                    <SalaryInputComponent label="HRA received from employer" name="hraFromEmployer"
+                                          value={this.props.hraFromEmployer}
+                                          defaultValue={this.props.defaultHraFromEmployer}
+                                          step="10000"
+                                          onChange={this.props.onChange}/>
+                </div>
+
+            </div>);
 
     }
 }
@@ -52,5 +63,7 @@ export default class Hra extends Component {
 Hra.propTypes = {
     metro: PropTypes.bool,
     monthlyRent: PropTypes.number,
+    hraFromEmployer: PropTypes.number,
+    defaultHraFromEmployer: PropTypes.number,
     onChange: PropTypes.func.isRequired,
 };

@@ -56,6 +56,7 @@ class AppContent extends Component {
     constructor() {
         super();
         this.tableViewModel = [{label: 'Basic Salary', get: (() => this.state.basic)},
+            {label: 'Bonus', get: (() => this.state.bonus)},
             {label: 'HRA exempted', get: (() => this.state.hra)},
             {label: 'Conveyance allowance', get: (() => this.state.conveyance)},
             {label: 'Medical Reimbursement', get: (() => this.state.medicalReimbursement)},
@@ -64,7 +65,7 @@ class AppContent extends Component {
             {
                 label: 'Taxable Income',
                 get: (() => this.state.taxableIncome),
-                formula: '(Gross- sum of 2 to 6 - Investments)'
+                formula: '(Gross + 2 - sum of 3 to 7 - Investments)'
             },
             {label: 'Income Tax', get: (() => this.state.incomeTax)},
             {label: 'Education Cess', get: (() => this.state.educationCess)},
@@ -73,6 +74,9 @@ class AppContent extends Component {
         this.state = {
             basic: 0,
             hra: 0,
+            bonus: 0,
+            hraFromEmployer: 0,
+            defaultHraFromEmployer: 0,
             professionalTax: CONSTANTS.PROF_TAX,
             medicalReimbursement: CONSTANTS.MED_REIMBURSEMENT,
             conveyance: 19200,
@@ -81,7 +85,7 @@ class AppContent extends Component {
             educationCess: 0,
             gratuity: 0,
             grossSalary: 0,
-            basicPercent: '30',
+            basicPercent: 30,
             monthlyRent: 0,
             metro: false,
             eightyCLimit: 0,
@@ -94,12 +98,8 @@ class AppContent extends Component {
 
     _handleInputChange(event) {
         let changedInput = event.target.name;
-        let changedValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        if (changedInput === 'basicPercent' && changedValue === 'Other') {
-            this.setState({[changedInput]: changedValue})
-        } else {
-            this._updateState(changedInput, changedValue);
-        }
+        let changedValue = event.target.type === 'checkbox' ? event.target.checked : (event.target.value === "" ? 0 : parseInt(event.target.value));
+        this._updateState(changedInput, changedValue);
     }
 
     _updateState(changedInput, changedValue) {
@@ -125,7 +125,12 @@ class AppContent extends Component {
                     {this._grossSalaryNotEmpty() &&
                     <div className={css(s.optionalInputs)}>
                         <Hra onChange={this._handleInputChange} monthlyRent={this.state.monthlyRent}
+                             hraFromEmployer={this.state.hraFromEmployer}
+                             defaultHraFromEmployer={this.state.defaultHraFromEmployer}
                              metro={this.state.metro}/>
+                        <SalaryInputComponent label="Bonus" name="bonus" step="100000"
+                                              value={this.state.bonus} onChange={this._handleInputChange}/>
+
                         <InvestmentsInput eightyCLimit={this.state.eightyCLimit} onChange={this._updateState}/>
                     </div>
                     }

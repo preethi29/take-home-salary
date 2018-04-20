@@ -34,9 +34,6 @@ const s = StyleSheet.create({
         }
 
     },
-    optionalInputs: {
-        padding: '2% 0'
-    },
     bold: {
         fontWeight: 'bold',
         fontSize: '1.142em',

@@ -22,21 +22,21 @@ export default class BasicSalary extends React.Component {
         return (
             <div className={"btn-group input-group " + css(s.basicSalary)}>
                 <span className="input-group-addon">Basic is </span>
-                <label className={"btn btn-primary " + (this.props.basicPercent === '30' ? 'active' : '')}>
+                <label className={"btn btn-primary " + (this.props.basicPercent === 30 ? 'active' : '')}>
                     <input type="radio" value="30" name="basicPercent" onChange={this.props.onChange}
-                           checked={this.props.basicPercent === '30'}/> 30% of Gross
+                           checked={this.props.basicPercent === 30}/> 30% of Gross
                 </label>
-                <label className={"btn btn-primary " + ( this.props.basicPercent === '40' ? 'active' : '')}>
+                <label className={"btn btn-primary " + ( this.props.basicPercent === 40 ? 'active' : '')}>
                     <input type="radio" value="40" name="basicPercent" onChange={this.props.onChange}
-                           checked={this.props.basicPercent === '40'}/> 40% of Gross
+                           checked={this.props.basicPercent === 40}/> 40% of Gross
                 </label>
                 <label
                     className={"btn btn-primary " +
-                    (this.props.basicPercent !== '30' && this.props.basicPercent !== '40' ? 'active' : '')}>
+                    (this.props.basicPercent !== 30 && this.props.basicPercent !== 40 ? 'active' : '')}>
                     <input type="radio" value="0" name="basicPercent" onChange={this.props.onChange}
-                           checked={this.props.basicPercent !== '30' && this.props.basicPercent !== '40'}/>
+                           checked={this.props.basicPercent !== 30 && this.props.basicPercent !== 40}/>
                     <span>Other %</span>
-                    {this.props.basicPercent !== '30' && this.props.basicPercent !== '40' &&
+                    {this.props.basicPercent !== 30 && this.props.basicPercent !== 40 &&
                     <input type="number" name="basicPercent" value={this.props.basicPercent} placeholder="In percentage"
                            className={css(s.otherBasicPercent)}
                            onChange={this.props.onChange}/>
@@ -50,5 +50,5 @@ export default class BasicSalary extends React.Component {
 
 BasicSalary.propTypes = {
     onChange: PropTypes.func.isRequired,
-    basicPercent: PropTypes.string
+    basicPercent: PropTypes.number
 };

@@ -17,7 +17,7 @@
     "gh-pages": "^1.0.0",
     "node-sass-chokidar": "^0.0.2",
     "npm-run-all": "^4.0.2",
-    "react-scripts": "0.9.5"
+    "react-scripts": "^1.0.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",

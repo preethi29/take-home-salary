@@ -75,7 +75,8 @@ export default class SalaryInputComponent extends React.Component {
         super();
         this.state = {
             isFocused: false,
-            value: props.value
+            value: props.defaultValue? props.defaultValue :props.value,
+            defaultValue: props.defaultValue,
         };
         this._focusChange = this._focusChange.bind(this);
         this._onChange = this._onChange.bind(this);
@@ -100,6 +101,13 @@ export default class SalaryInputComponent extends React.Component {
         );
     }
 
+    _getNewValue(newDefaultValue){
+        if(this.state.value === this.props.defaultValue && newDefaultValue){
+            return newDefaultValue;
+        }
+        return this.state.value;
+    }
+
     _onChange(event) {
         if (this.props.limit && Number(event.target.value) > Number(this.props.limit)) {
             event.target.value = this.props.limit;
@@ -110,13 +118,25 @@ export default class SalaryInputComponent extends React.Component {
 
     _focusChange() {
         this.setState({isFocused: !this.state.isFocused});
-        this.setState({value: !this.state.isFocused && this.props.value === 0 ? "" : this.props.value});
+        this.setState({value: !this.state.isFocused && this.state.value === 0 ? "" : this.state.value});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.defaultValue !== this.props.defaultValue) {
+            let newValue = this._getNewValue(nextProps.defaultValue);
+            this.setState( {
+                defaultValue: nextProps.defaultValue,
+                value: newValue
+            });
+            this.props.onChange({target: {name: this.props.name, value: newValue}})
+        }
     }
 }
 
 SalaryInputComponent.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
+    defaultValue: PropTypes.number,
     value: PropTypes.number,
     onChange: PropTypes.func,
     limit: PropTypes.string,

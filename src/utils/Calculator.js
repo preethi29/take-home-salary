@@ -4,19 +4,21 @@ import {CONSTANTS} from "../constants";
 export default class Calculator {
     static calculateSalaryComponents(state) {
         let {
-            medicalReimbursement, monthlyRent, metro,
-            conveyance, grossSalary, professionalTax, basicPercent, totalExemptedInvestments
+            medicalReimbursement, monthlyRent, metro, hraFromEmployer, defaultHraFromEmployer,
+            conveyance, grossSalary, professionalTax, basicPercent, totalExemptedInvestments, bonus
         } = state;
 
         const basic = _.floor(grossSalary * basicPercent / 100);
+        defaultHraFromEmployer = _.floor(grossSalary * 0.25, 2);
         const pfDetails = Calculator.calculatePFComponents(basic);
-        const hra = Calculator.calculateHRA(basic, monthlyRent, metro);
+        const hra = Calculator.calculateHRA(basic, monthlyRent, metro, hraFromEmployer);
         const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pfDetails.pf, 2);
-        const taxableIncome = _.floor(grossSalary - pfDetails.pf - conveyance - medicalReimbursement
+        const taxableIncome = _.floor((grossSalary + bonus) - pfDetails.pf - conveyance - medicalReimbursement
             - hra - professionalTax - totalExemptedInvestments, 2);
         const incomeTax = Calculator.calculateIncomeTax(taxableIncome);
         const educationCess = _.floor(incomeTax * (CONSTANTS.EDU_CESS_PERCENT / 100), 2);
-        const takeHomeSalary = _.floor(grossSalary - incomeTax - educationCess - professionalTax - pfDetails.pf - medicalReimbursement, 2);
+        const takeHomeSalary = _.floor((grossSalary + bonus) - incomeTax - educationCess - professionalTax
+            - pfDetails.pf - medicalReimbursement, 2);
         return {
             basic,
             metro,
@@ -32,7 +34,10 @@ export default class Calculator {
             takeHomeSalary,
             educationCess,
             eightyCLimit,
-            totalExemptedInvestments
+            totalExemptedInvestments,
+            hraFromEmployer,
+            defaultHraFromEmployer,
+            bonus
         };
     }
 
@@ -44,14 +49,14 @@ export default class Calculator {
         return {pf, employerPf, employerEps, totalEmployerContribution};
     }
 
-    static calculateHRA(basic, monthlyRent, metro) {
+    static calculateHRA(basic, monthlyRent, metro, hraFromEmployer) {
         if (monthlyRent === 0) {
             return 0;
         }
         const percentFromBasic = _.floor(metro ? (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_METRO / 100)
             : (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_NON_METRO / 100), 2);
         const rentPaidMinusTenPercentOfBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
-        return rentPaidMinusTenPercentOfBasic < percentFromBasic ? rentPaidMinusTenPercentOfBasic : percentFromBasic;
+        return _.min([hraFromEmployer, percentFromBasic, rentPaidMinusTenPercentOfBasic]);
     }
 
     static calculateIncomeTax(taxableIncome) {
