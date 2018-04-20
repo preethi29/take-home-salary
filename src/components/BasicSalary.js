@@ -18,34 +18,45 @@ const s = StyleSheet.create({
     },
 });
 export default class BasicSalary extends React.Component {
+
+    constructor(){
+        super();
+        this._handleChange = this._handleChange.bind(this);
+    }
+
     render() {
         return (
             <div className={"btn-group input-group " + css(s.basicSalary)}>
                 <span className="input-group-addon">Basic is </span>
                 <label className={"btn btn-primary " + (this.props.basicPercent === 30 ? 'active' : '')}>
-                    <input type="radio" value="30" name="basicPercent" onChange={this.props.onChange}
+                    <input type="radio" value="30" name="basicPercent" onChange={this._handleChange}
                            checked={this.props.basicPercent === 30}/> 30% of Gross
                 </label>
                 <label className={"btn btn-primary " + ( this.props.basicPercent === 40 ? 'active' : '')}>
-                    <input type="radio" value="40" name="basicPercent" onChange={this.props.onChange}
+                    <input type="radio" value="40" name="basicPercent" onChange={this._handleChange}
                            checked={this.props.basicPercent === 40}/> 40% of Gross
                 </label>
                 <label
                     className={"btn btn-primary " +
                     (this.props.basicPercent !== 30 && this.props.basicPercent !== 40 ? 'active' : '')}>
-                    <input type="radio" value="0" name="basicPercent" onChange={this.props.onChange}
+                    <input type="radio" value="0" name="basicPercent" onChange={this._handleChange}
                            checked={this.props.basicPercent !== 30 && this.props.basicPercent !== 40}/>
                     <span>Other %</span>
                     {this.props.basicPercent !== 30 && this.props.basicPercent !== 40 &&
                     <input type="number" name="basicPercent" value={this.props.basicPercent} placeholder="In percentage"
                            className={css(s.otherBasicPercent)}
-                           onChange={this.props.onChange}/>
+                           onChange={this._handleChange}/>
 
                     }
                 </label>
             </div>
         )
     }
+
+    _handleChange(event){
+        this.props.onChange(event.target.name, Number(event.target.value));
+    }
+
 }
 
 BasicSalary.propTypes = {

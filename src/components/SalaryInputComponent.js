@@ -2,6 +2,8 @@ import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
 import PropTypes from "prop-types";
+import NumberFormat from 'react-number-format';
+import {CONSTANTS} from "../constants";
 
 const s = StyleSheet.create({
     textFieldWrapper: {
@@ -75,7 +77,7 @@ export default class SalaryInputComponent extends React.Component {
         super();
         this.state = {
             isFocused: false,
-            value: props.defaultValue? props.defaultValue :props.value,
+            value: props.defaultValue ? props.defaultValue : props.value,
             defaultValue: props.defaultValue,
         };
         this._focusChange = this._focusChange.bind(this);
@@ -89,46 +91,58 @@ export default class SalaryInputComponent extends React.Component {
         return (
             <div className={wrapperClassName}>
                 <label className={labelClassName}>{this.props.label}
-                    {this.props.limit && <small> (Limit: {this.props.limit})</small>}
+                    {this.props.limit && <small>
+                        (Limit: <NumberFormat displayType={"text"} thousandSeparator={true}
+                                              prefix={CONSTANTS.CURRENCY_PREFIX}
+                                              value={this.props.limit}/>)</small>}
                 </label>
-                <input type="number" name={this.props.name} ref={input => this.inputField = input}
-                       value={this.state.value} className={css(s.textField)}
-                       step={this.props.step} min="0" max={this.props.limit} onBlur={this._focusChange}
-                       onFocus={this._focusChange} onChange={this._onChange}/>
+                <NumberFormat name={this.props.name} value={this.state.value} className={css(s.textField)}
+                              isNumericString={true} allowNegative={false} prefix={CONSTANTS.CURRENCY_PREFIX}
+                              thousandSeparator={true} onBlur={this._focusChange}
+                              onFocus={this._focusChange} onValueChange={this._onChange}/>
                 <span className={barClassName}/>
             </div>
 
         );
     }
 
-    _getNewValue(newDefaultValue){
-        if(this.state.value === this.props.defaultValue && newDefaultValue){
+    _getNewValue(newDefaultValue) {
+        if (this.state.value === this.props.defaultValue && newDefaultValue) {
             return newDefaultValue;
         }
         return this.state.value;
     }
 
-    _onChange(event) {
-        if (this.props.limit && Number(event.target.value) > Number(this.props.limit)) {
-            event.target.value = this.props.limit;
+    _onChange(values, event) {
+        if (event.type === 'change') {
+            let {floatValue, value} = values;
+            if (value === "") {
+                floatValue = 0;
+            }
+
+            if (this.props.limit && Number(floatValue) > Number(this.props.limit)) {
+                floatValue = this.props.limit
+            }
+            this.setState({value: floatValue});
+            this.props.onChange(this.props.name, floatValue);
         }
-        this.setState({value: event.target.value});
-        this.props.onChange(event);
     }
 
-    _focusChange() {
+    _focusChange(event) {
         this.setState({isFocused: !this.state.isFocused});
-        this.setState({value: !this.state.isFocused && this.state.value === 0 ? "" : this.state.value});
+        if (this.state.isFocused && this.state.value === 0) {
+            event.target.value = ""
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.defaultValue !== this.props.defaultValue) {
             let newValue = this._getNewValue(nextProps.defaultValue);
-            this.setState( {
+            this.setState({
                 defaultValue: nextProps.defaultValue,
                 value: newValue
             });
-            this.props.onChange({target: {name: this.props.name, value: newValue}})
+            this.props.onChange(this.props.name, newValue)
         }
     }
 }
@@ -140,9 +154,4 @@ SalaryInputComponent.propTypes = {
     value: PropTypes.number,
     onChange: PropTypes.func,
     limit: PropTypes.string,
-    step: PropTypes.number
-};
-
-SalaryInputComponent.defaultProps = {
-    step: 1,
 };

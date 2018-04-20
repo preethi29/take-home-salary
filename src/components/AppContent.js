@@ -12,6 +12,8 @@ import Calculations from "./Calculations";
 import Calculator from "../utils/Calculator";
 import {setPFDetails} from "../redux-store/actions";
 import {connect} from "react-redux";
+import NumberFormat from 'react-number-format';
+
 
 const s = StyleSheet.create({
     appContent: {
@@ -92,24 +94,15 @@ class AppContent extends Component {
             totalExemptedInvestments: 0,
         };
         this._handleInputChange = this._handleInputChange.bind(this);
-        this._updateState = this._updateState.bind(this);
         this._grossSalaryNotEmpty = this._grossSalaryNotEmpty.bind(this);
     }
 
-    _handleInputChange(event) {
-        let changedInput = event.target.name;
-        let changedValue = event.target.type === 'checkbox' ? event.target.checked : (event.target.value === "" ? 0 : parseInt(event.target.value));
-        this._updateState(changedInput, changedValue);
-    }
-
-    _updateState(changedInput, changedValue) {
-        let nextState = _.extend({}, this.state, {[changedInput]: changedValue});
+    _handleInputChange(name, value) {
+        let nextState = _.extend({}, this.state, {[name]: value});
         let salaryComponents = Calculator.calculateSalaryComponents(nextState);
         this.props.setPFDetails(salaryComponents.pfDetails);
         this.setState(salaryComponents);
     }
-
-
     _grossSalaryNotEmpty() {
         return (this.state.grossSalary !== 0 && this.state.grossSalary !== "");
     }
@@ -118,7 +111,7 @@ class AppContent extends Component {
         return (
             <div className={css(s.appContent)}>
                 <div className={css(s.appInputs)}>
-                    <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary" step="100000"
+                    <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary"
                                           value={this.state.grossSalary} onChange={this._handleInputChange}/>
                     <BasicSalary basicPercent={this.state.basicPercent} onChange={this._handleInputChange}/>
 
@@ -128,10 +121,10 @@ class AppContent extends Component {
                              hraFromEmployer={this.state.hraFromEmployer}
                              defaultHraFromEmployer={this.state.defaultHraFromEmployer}
                              metro={this.state.metro}/>
-                        <SalaryInputComponent label="Bonus" name="bonus" step="100000"
+                        <SalaryInputComponent label="Bonus" name="bonus"
                                               value={this.state.bonus} onChange={this._handleInputChange}/>
 
-                        <InvestmentsInput eightyCLimit={this.state.eightyCLimit} onChange={this._updateState}/>
+                        <InvestmentsInput eightyCLimit={this.state.eightyCLimit} onChange={this._handleInputChange}/>
                     </div>
                     }
 
@@ -155,8 +148,15 @@ class AppContent extends Component {
                                     {row.label} {row.formula &&
                                 <small className={css(s.formula)}> {row.formula}</small>}
                                 </td>
-                                <td className={css(s.tableCell)}>{_.floor(row.get() / 12, 2)}</td>
-                                <td className={css(s.tableCell)}>{row.get()}</td>
+                                <td className={css(s.tableCell)}>
+                                    <NumberFormat displayType={"text"} thousandSeparator={true}
+                                                  prefix={CONSTANTS.CURRENCY_PREFIX}
+                                                  value={_.floor(row.get() / 12, 2)}/>
+                                </td>
+                                <td className={css(s.tableCell)}>
+                                    <NumberFormat displayType={"text"} thousandSeparator={true}
+                                                  prefix={CONSTANTS.CURRENCY_PREFIX} value={row.get()}/>
+                                </td>
                             </tr>
                         })}
                         </tbody>

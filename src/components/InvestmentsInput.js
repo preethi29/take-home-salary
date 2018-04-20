@@ -3,6 +3,7 @@ import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import PropTypes from "prop-types";
 import SalaryInputComponent from "./SalaryInputComponent";
 import {CONSTANTS} from "../constants";
+import NumberFormat from "react-number-format";
 
 export default class InvestmentsInput extends React.Component {
 
@@ -42,16 +43,17 @@ export default class InvestmentsInput extends React.Component {
                 <SalaryInputComponent label="80G - Donations" name="eightyG"
                                       value={this.state.eightyG}
                                       onChange={this._handleInputChange}/>
-                <h4>Total Exempted Investments: {this.state.totalExemptedInvestments}</h4>
+                <h4>Total Exempted Investments: <NumberFormat displayType={"text"} thousandSeparator={true}
+                                                              prefix={CONSTANTS.CURRENCY_PREFIX}
+                                                              value={this.state.totalExemptedInvestments}/>
+                </h4>
             </div>
         )
     }
 
-    _handleInputChange(event) {
-        let changedInput = event.target.name;
-        let changedValue = event.target.value;
-        const totalExemptedInvestments = +this.state.totalExemptedInvestments - +this.state[changedInput] + +changedValue;
-        this.setState({totalExemptedInvestments: totalExemptedInvestments, [changedInput]: changedValue});
+    _handleInputChange(name, value) {
+        const totalExemptedInvestments = +this.state.totalExemptedInvestments - +this.state[name] + +value;
+        this.setState({totalExemptedInvestments: totalExemptedInvestments, [name]: value});
         this.props.onChange('totalExemptedInvestments', totalExemptedInvestments);
     }
 }

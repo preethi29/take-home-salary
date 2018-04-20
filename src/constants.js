@@ -25,5 +25,6 @@ export const CONSTANTS = {
     HRA: {
         BASIC_PERCENT_IF_METRO: 50,
         BASIC_PERCENT_IF_NON_METRO: 40,
-    }
+    },
+    CURRENCY_PREFIX: "₹"
 };
