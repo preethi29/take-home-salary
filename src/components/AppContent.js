@@ -57,7 +57,6 @@ class AppContent extends Component {
 
     constructor() {
         super();
-        console.log(this.props);
         this.tableViewModel = [{label: 'Basic Salary', get: (() => this.state.basic)},
             {label: 'Bonus', get: (() => this.state.bonus)},
             {label: 'HRA exempted', get: (() => this.props.hraDetails.hraExempted)},

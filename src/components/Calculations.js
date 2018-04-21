@@ -43,13 +43,13 @@ export default class Calculations extends React.Component {
     constructor() {
         super();
         this.calculatedComponents = [
-            'PF',
             'HRA',
+            'PF',
             'Income Tax'
         ];
         this.state = {
             show: false,
-            currentCalculatedComponent: 'PF'
+            currentCalculatedComponent: 'HRA'
         };
         this._toggle = this._toggle.bind(this);
         this._switchCurrentComp = this._switchCurrentComp.bind(this);
@@ -65,6 +65,7 @@ export default class Calculations extends React.Component {
                 currentComp = <HRADetails/>;
                 break;
             default:
+                currentComp = <h3>Coming soon</h3>
                 break;
         }
 
