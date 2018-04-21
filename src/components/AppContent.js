@@ -10,7 +10,7 @@ import {CONSTANTS} from "../constants";
 import InvestmentsInput from "./InvestmentsInput";
 import Calculations from "./Calculations";
 import Calculator from "../utils/Calculator";
-import {setPFDetails} from "../redux-store/actions";
+import {setHRADetails, setPFDetails} from "../redux-store/actions";
 import {connect} from "react-redux";
 import NumberFormat from 'react-number-format';
 
@@ -57,9 +57,10 @@ class AppContent extends Component {
 
     constructor() {
         super();
+        console.log(this.props);
         this.tableViewModel = [{label: 'Basic Salary', get: (() => this.state.basic)},
             {label: 'Bonus', get: (() => this.state.bonus)},
-            {label: 'HRA exempted', get: (() => this.state.hra)},
+            {label: 'HRA exempted', get: (() => this.props.hraDetails.hraExempted)},
             {label: 'Conveyance allowance', get: (() => this.state.conveyance)},
             {label: 'Medical Reimbursement', get: (() => this.state.medicalReimbursement)},
             {label: 'Employee PF', formula: '(12% Basic)', get: (() => this.props.pfDetails.pf)},
@@ -101,8 +102,10 @@ class AppContent extends Component {
         let nextState = _.extend({}, this.state, {[name]: value});
         let salaryComponents = Calculator.calculateSalaryComponents(nextState);
         this.props.setPFDetails(salaryComponents.pfDetails);
+        this.props.setHRADetails(salaryComponents.hraDetails);
         this.setState(salaryComponents);
     }
+
     _grossSalaryNotEmpty() {
         return (this.state.grossSalary !== 0 && this.state.grossSalary !== "");
     }
@@ -172,7 +175,8 @@ class AppContent extends Component {
 
 const mapStateToProps = state => {
     return {
-        pfDetails: state.pfDetails
+        pfDetails: state.pfDetails,
+        hraDetails: state.hraDetails,
     }
 };
 
@@ -180,6 +184,9 @@ const mapDispatchToProps = dispatch => {
     return {
         setPFDetails: pfDetails => {
             dispatch(setPFDetails(pfDetails))
+        },
+        setHRADetails: hraDetails => {
+            dispatch(setHRADetails(hraDetails))
         }
     }
 };

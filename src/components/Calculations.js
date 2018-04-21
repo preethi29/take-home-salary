@@ -1,6 +1,7 @@
 import React from "react";
 import {css, StyleSheet} from "aphrodite";
 import PFDetails from "./PFDetails";
+import HRADetails from "./HRADetails";
 
 const s = StyleSheet.create({
     calcButton: {
@@ -59,6 +60,9 @@ export default class Calculations extends React.Component {
         switch (this.state.currentCalculatedComponent) {
             case 'PF':
                 currentComp = <PFDetails/>;
+                break;
+            case 'HRA':
+                currentComp = <HRADetails/>;
                 break;
             default:
                 break;

@@ -11,10 +11,10 @@ export default class Calculator {
         const basic = _.floor(grossSalary * basicPercent / 100);
         defaultHraFromEmployer = _.floor(grossSalary * 0.25, 2);
         const pfDetails = Calculator.calculatePFComponents(basic);
-        const hra = Calculator.calculateHRA(basic, monthlyRent, metro, hraFromEmployer);
+        const hraDetails = Calculator.calculateHRA(basic, monthlyRent, metro, hraFromEmployer);
         const eightyCLimit = _.floor(CONSTANTS.EIGHTYC_LIMIT - pfDetails.pf, 2);
         const taxableIncome = _.floor((grossSalary + bonus) - pfDetails.pf - conveyance - medicalReimbursement
-            - hra - professionalTax - totalExemptedInvestments, 2);
+            - hraDetails.hraExempted - professionalTax - totalExemptedInvestments, 2);
         const incomeTax = Calculator.calculateIncomeTax(taxableIncome);
         const educationCess = _.floor(incomeTax * (CONSTANTS.EDU_CESS_PERCENT / 100), 2);
         const takeHomeSalary = _.floor((grossSalary + bonus) - incomeTax - educationCess - professionalTax
@@ -23,12 +23,12 @@ export default class Calculator {
             basic,
             metro,
             pfDetails,
+            hraDetails,
             grossSalary,
             basicPercent,
             conveyance,
             monthlyRent,
             medicalReimbursement,
-            hra,
             incomeTax,
             taxableIncome,
             takeHomeSalary,
@@ -50,13 +50,14 @@ export default class Calculator {
     }
 
     static calculateHRA(basic, monthlyRent, metro, hraFromEmployer) {
-        if (monthlyRent === 0) {
-            return 0;
-        }
         const percentFromBasic = _.floor(metro ? (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_METRO / 100)
             : (basic * CONSTANTS.HRA.BASIC_PERCENT_IF_NON_METRO / 100), 2);
-        const rentPaidMinusTenPercentOfBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
-        return _.min([hraFromEmployer, percentFromBasic, rentPaidMinusTenPercentOfBasic]);
+        if (monthlyRent === 0) {
+            return {hraExempted: 0, metro, hraFromEmployer, rentOverTenPercentBasic: 0, percentFromBasic};
+        }
+        const rentOverTenPercentBasic = _.floor((monthlyRent * 12) - (basic * 0.10), 2);
+        let hraExempted = _.min([hraFromEmployer, percentFromBasic, rentOverTenPercentBasic]);
+        return {hraExempted, percentFromBasic, metro, hraFromEmployer, rentOverTenPercentBasic};
     }
 
     static calculateIncomeTax(taxableIncome) {
