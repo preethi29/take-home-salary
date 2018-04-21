@@ -2,6 +2,8 @@ import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import {css, StyleSheet} from "aphrodite";
 import PropTypes from "prop-types";
+import {connect} from "react-redux";
+import { setSalaryComponent} from "../redux-store/actions";
 
 const s = StyleSheet.create({
     basicSalary: {
@@ -17,7 +19,7 @@ const s = StyleSheet.create({
         height: '20px',
     },
 });
-export default class BasicSalary extends React.Component {
+class BasicSalary extends React.Component {
 
     constructor(){
         super();
@@ -54,12 +56,30 @@ export default class BasicSalary extends React.Component {
     }
 
     _handleChange(event){
-        this.props.onChange(event.target.name, Number(event.target.value));
+        this.props.setBasicPercent(Number(event.target.value));
     }
 
 }
 
 BasicSalary.propTypes = {
-    onChange: PropTypes.func.isRequired,
     basicPercent: PropTypes.number
 };
+
+const mapStateToProps = state => {
+    return {
+        basicPercent: state.basicPercent
+    }
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        setBasicPercent: basicPercent => {
+            dispatch(setSalaryComponent('basicPercent',basicPercent))
+        },
+    }
+};
+
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(BasicSalary);

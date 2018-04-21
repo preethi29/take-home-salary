@@ -4,8 +4,10 @@ import PropTypes from "prop-types";
 import SalaryInputComponent from "./SalaryInputComponent";
 import {CONSTANTS} from "../constants";
 import NumberFormat from "react-number-format";
+import {setSalaryComponent} from "../redux-store/actions";
+import {connect} from "react-redux";
 
-export default class InvestmentsInput extends React.Component {
+class InvestmentsInput extends React.Component {
 
     constructor() {
         super();
@@ -54,11 +56,31 @@ export default class InvestmentsInput extends React.Component {
     _handleInputChange(name, value) {
         const totalExemptedInvestments = +this.state.totalExemptedInvestments - +this.state[name] + +value;
         this.setState({totalExemptedInvestments: totalExemptedInvestments, [name]: value});
-        this.props.onChange('totalExemptedInvestments', totalExemptedInvestments);
+        this.props.setSalaryComponent('totalExemptedInvestments', totalExemptedInvestments);
     }
 }
 
 InvestmentsInput.propTypes = {
     eightyCLimit: PropTypes.number,
-    onChange: PropTypes.func.isRequired,
 };
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setSalaryComponent: (name, value) => {
+            dispatch(setSalaryComponent(name, value))
+        }
+    }
+};
+
+const mapStateToProps = state => {
+    return {
+        eightyCLimit: state.eightyCLimit,
+        totalExemptedInvestments: state.totalExemptedInvestments
+    }
+};
+
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvestmentsInput);

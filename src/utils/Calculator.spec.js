@@ -1,63 +1,104 @@
 import Calculator from "../utils/Calculator";
 
 test('calculate HRA using amount exceeded over 10 percent of basic pay', () => {
-    expect(Calculator.calculateHRA(800000, 8300, false, 500000)).toEqual({
-        hraFromEmployer: 500000,
-        percentFromBasic: 320000,
-        metro: false,
-        rentOverTenPercentBasic: 19600,
-        hraExempted: 19600
-    });
-    expect(Calculator.calculateHRA(800000, 12500, false, 500000)).toEqual({
-        hraFromEmployer: 500000,
-        percentFromBasic: 320000,
-        metro: false,
-        rentOverTenPercentBasic: 70000,
-        hraExempted: 70000
-    });
+    let hraFromEmployer = 500000;
+    let percentFromBasic = 320000;
+    let rentOverTenPercentBasic = 19600;
+    let metro = false;
+    let monthlyRent = 8300;
+    let basic = 800000;
+    let grossSalary = 800000;
+    const expectedHRADetails = {
+        hraFromEmployer, percentFromBasic, metro, rentOverTenPercentBasic, monthlyRent,
+        defaultHraFromEmployer: 200000,
+        hraExempted: rentOverTenPercentBasic
+    };
+    expect(Calculator.calculateHRA(grossSalary, basic, {
+        monthlyRent,
+        metro,
+        hraFromEmployer
+    })).toEqual(expectedHRADetails);
+
 });
 
 test('calculate HRA using 40% of basic for a non metro city', () => {
+    let hraFromEmployer = 500000;
+    let percentFromBasic = 320000;
+    let rentOverTenPercentBasic = 400000;
+    let metro = false;
+    let monthlyRent = 40000;
+    let basic = 800000;
+    let grossSalary = 800000;
     const expectedHRADetails = {
-        hraFromEmployer: 500000,
-        percentFromBasic: 320000,
-        metro: false,
-        rentOverTenPercentBasic: 400000,
-        hraExempted: 320000
+        hraFromEmployer, percentFromBasic, metro, rentOverTenPercentBasic, monthlyRent,
+        defaultHraFromEmployer: 200000,
+        hraExempted: percentFromBasic
     };
-    expect(Calculator.calculateHRA(800000, 40000, false, 500000)).toEqual(expectedHRADetails);
+    expect(Calculator.calculateHRA(grossSalary, basic, {
+        monthlyRent,
+        metro,
+        hraFromEmployer
+    })).toEqual(expectedHRADetails);
 });
 
 test('calculate HRA using 50% of basic for a metro city', () => {
+    let hraFromEmployer = 600000;
+    let percentFromBasic = 400000;
+    let rentOverTenPercentBasic = 520000;
+    let metro = true;
+    let monthlyRent = 50000;
+    let basic = 800000;
+    let grossSalary = 800000;
     const expectedHRADetails = {
-        "hraExempted": 400000,
-        "hraFromEmployer": 600000,
-        "metro": true,
-        "percentFromBasic": 400000,
-        "rentOverTenPercentBasic": 520000
+        hraFromEmployer, percentFromBasic, metro, rentOverTenPercentBasic, monthlyRent,
+        defaultHraFromEmployer: 200000,
+        hraExempted: percentFromBasic
     };
-
-    expect(Calculator.calculateHRA(800000, 50000, true, 600000)).toEqual(expectedHRADetails);
+    expect(Calculator.calculateHRA(grossSalary, basic, {
+        monthlyRent,
+        metro,
+        hraFromEmployer
+    })).toEqual(expectedHRADetails);
 });
 
-test('calculate HRA using hra received from employer', () => {
+test('calculate defaultHRAFromEmployer and HRA using hra received from employer', () => {
+    let hraFromEmployer = 300000;
+    let percentFromBasic = 400000;
+    let rentOverTenPercentBasic = 520000;
+    let metro = true;
+    let monthlyRent = 50000;
+    let basic = 800000;
+    let grossSalary = 800000;
     const expectedHRADetails = {
-        hraFromEmployer: 300000,
-        percentFromBasic: 400000,
-        metro: true,
-        rentOverTenPercentBasic: 520000,
-        hraExempted: 300000
+        hraFromEmployer, percentFromBasic, metro, rentOverTenPercentBasic, monthlyRent,
+        defaultHraFromEmployer: 200000,
+        hraExempted: hraFromEmployer
     };
-    expect(Calculator.calculateHRA(800000, 50000, true, 300000)).toEqual(expectedHRADetails);
+    expect(Calculator.calculateHRA(grossSalary, basic, {
+        monthlyRent,
+        metro,
+        hraFromEmployer
+    })).toEqual(expectedHRADetails);
 });
 
 test('should return just values as 0 when monthly rent is 0', () => {
+    let grossSalary = 800000;
+    let hraFromEmployer = 300000;
+    let monthlyRent = 0;
+    let percentFromBasic = 400000;
+    let metro = true;
     const expectedHRADetails = {
-        hraFromEmployer: 300000,
-        percentFromBasic: 400000,
-        metro: true,
+        hraFromEmployer,
+        percentFromBasic,
+        metro,
+        monthlyRent,
         rentOverTenPercentBasic: 0,
-        hraExempted: 0
+        hraExempted: 0,
+        defaultHraFromEmployer: 200000,
     };
-    expect(Calculator.calculateHRA(800000, 0, true, 300000)).toEqual(expectedHRADetails);
+    expect(Calculator.calculateHRA(grossSalary, 800000, {
+        monthlyRent,
+        metro,
+        hraFromEmployer
+    })).toEqual(expectedHRADetails);
 });

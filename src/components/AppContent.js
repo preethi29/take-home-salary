@@ -9,8 +9,7 @@ import Hra from "./Hra";
 import {CONSTANTS} from "../constants";
 import InvestmentsInput from "./InvestmentsInput";
 import Calculations from "./Calculations";
-import Calculator from "../utils/Calculator";
-import {setHRADetails, setPFDetails} from "../redux-store/actions";
+import {setHRADetails, setSalaryComponent} from "../redux-store/actions";
 import {connect} from "react-redux";
 import NumberFormat from 'react-number-format';
 
@@ -57,56 +56,32 @@ class AppContent extends Component {
 
     constructor() {
         super();
-        this.tableViewModel = [{label: 'Basic Salary', get: (() => this.state.basic)},
-            {label: 'Bonus', get: (() => this.state.bonus)},
+        this.tableViewModel = [{label: 'Basic Salary', get: (() => this.props.basic)},
+            {label: 'Bonus', get: (() => this.props.bonus)},
             {label: 'HRA exempted', get: (() => this.props.hraDetails.hraExempted)},
-            {label: 'Conveyance allowance', get: (() => this.state.conveyance)},
-            {label: 'Medical Reimbursement', get: (() => this.state.medicalReimbursement)},
+            {label: 'Conveyance allowance', get: (() => this.props.conveyance)},
+            {label: 'Medical Reimbursement', get: (() => this.props.medicalReimbursement)},
             {label: 'Employee PF', formula: '(12% Basic)', get: (() => this.props.pfDetails.pf)},
-            {label: 'Professional Tax', get: (() => this.state.professionalTax)},
+            {label: 'Professional Tax', get: (() => this.props.professionalTax)},
             {
                 label: 'Taxable Income',
-                get: (() => this.state.taxableIncome),
+                get: (() => this.props.taxableIncome),
                 formula: '(Gross + 2 - sum of 3 to 7 - Investments)'
             },
-            {label: 'Income Tax', get: (() => this.state.incomeTax)},
-            {label: 'Education Cess', get: (() => this.state.educationCess)},
-            {label: 'Take Home Salary', get: (() => this.state.takeHomeSalary), className: 'bold', noIndex: true},
+            {label: 'Income Tax', get: (() => this.props.incomeTax)},
+            {label: 'Education Cess', get: (() => this.props.educationCess)},
+            {label: 'Take Home Salary', get: (() => this.props.takeHomeSalary), className: 'bold', noIndex: true},
         ];
-        this.state = {
-            basic: 0,
-            hra: 0,
-            bonus: 0,
-            hraFromEmployer: 0,
-            defaultHraFromEmployer: 0,
-            professionalTax: CONSTANTS.PROF_TAX,
-            medicalReimbursement: CONSTANTS.MED_REIMBURSEMENT,
-            conveyance: 19200,
-            taxableIncome: 0,
-            incomeTax: 0,
-            educationCess: 0,
-            gratuity: 0,
-            grossSalary: 0,
-            basicPercent: 30,
-            monthlyRent: 0,
-            metro: false,
-            eightyCLimit: 0,
-            totalExemptedInvestments: 0,
-        };
         this._handleInputChange = this._handleInputChange.bind(this);
         this._grossSalaryNotEmpty = this._grossSalaryNotEmpty.bind(this);
     }
 
     _handleInputChange(name, value) {
-        let nextState = _.extend({}, this.state, {[name]: value});
-        let salaryComponents = Calculator.calculateSalaryComponents(nextState);
-        this.props.setPFDetails(salaryComponents.pfDetails);
-        this.props.setHRADetails(salaryComponents.hraDetails);
-        this.setState(salaryComponents);
+        this.props.setSalaryComponent(name, value)
     }
 
     _grossSalaryNotEmpty() {
-        return (this.state.grossSalary !== 0 && this.state.grossSalary !== "");
+        return (this.props.grossSalary !== 0 && this.props.grossSalary !== "");
     }
 
     render() {
@@ -114,19 +89,16 @@ class AppContent extends Component {
             <div className={css(s.appContent)}>
                 <div className={css(s.appInputs)}>
                     <SalaryInputComponent label="Gross Pay  (Yearly)" name="grossSalary"
-                                          value={this.state.grossSalary} onChange={this._handleInputChange}/>
-                    <BasicSalary basicPercent={this.state.basicPercent} onChange={this._handleInputChange}/>
+                                          value={this.props.grossSalary} onChange={this._handleInputChange}/>
+                    <BasicSalary/>
 
                     {this._grossSalaryNotEmpty() &&
                     <div className={css(s.optionalInputs)}>
-                        <Hra onChange={this._handleInputChange} monthlyRent={this.state.monthlyRent}
-                             hraFromEmployer={this.state.hraFromEmployer}
-                             defaultHraFromEmployer={this.state.defaultHraFromEmployer}
-                             metro={this.state.metro}/>
+                        <Hra/>
                         <SalaryInputComponent label="Bonus" name="bonus"
-                                              value={this.state.bonus} onChange={this._handleInputChange}/>
+                                              value={this.props.bonus} onChange={this._handleInputChange}/>
 
-                        <InvestmentsInput eightyCLimit={this.state.eightyCLimit} onChange={this._handleInputChange}/>
+                        <InvestmentsInput/>
                     </div>
                     }
 
@@ -173,19 +145,51 @@ class AppContent extends Component {
 }
 
 const mapStateToProps = state => {
+    const {
+        pfDetails,
+        hraDetails,
+        grossSalary,
+        bonus,
+        basic,
+        professionalTax,
+        medicalReimbursement,
+        conveyance,
+        taxableIncome,
+        incomeTax,
+        educationCess,
+        gratuity,
+        basicPercent,
+        eightyCLimit,
+        totalExemptedInvestments,
+        takeHomeSalary
+    } = state;
     return {
-        pfDetails: state.pfDetails,
-        hraDetails: state.hraDetails,
-    }
+        pfDetails,
+        hraDetails,
+        grossSalary,
+        bonus,
+        basic,
+        professionalTax,
+        medicalReimbursement,
+        conveyance,
+        taxableIncome,
+        incomeTax,
+        educationCess,
+        gratuity,
+        basicPercent,
+        eightyCLimit,
+        totalExemptedInvestments,
+        takeHomeSalary
+    };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        setPFDetails: pfDetails => {
-            dispatch(setPFDetails(pfDetails))
-        },
         setHRADetails: hraDetails => {
             dispatch(setHRADetails(hraDetails))
+        },
+        setSalaryComponent: (name, value) => {
+            dispatch(setSalaryComponent(name, value))
         }
     }
 };
